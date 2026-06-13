@@ -224,6 +224,18 @@ export default defineConfig({
     port: 3000,
     strictPort: false, // Will find next available port if 3000 is busy
     host: true,
+    proxy: {
+      '/maps-proxy': {
+        target: 'https://forge.manus.ai',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/maps-proxy/, '/v1/maps/proxy'),
+        secure: true,
+        headers: {
+          // The forge maps proxy validates Origin against the registered project domain
+          'Origin': 'https://3000-ijevd8ox8szi5ha63vvo5-fe566c3e.us2.manus.computer',
+        },
+      },
+    },
     allowedHosts: [
       ".manuspre.computer",
       ".manus.computer",

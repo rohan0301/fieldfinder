@@ -1,3 +1,10 @@
+/* =============================================================
+   FIRST BASE — NIGHT DIAMOND DESIGN SYSTEM
+   Stadium night-game aesthetic: dark field-green base,
+   amber scoreboard accents, chalk-white typography.
+   The map is the product. Everything else serves the map.
+   ============================================================= */
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -40,118 +47,139 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* First Base brand tokens */
+  --color-field-green: var(--field-green);
+  --color-turf-green: var(--turf-green);
+  --color-chalk-white: var(--chalk-white);
+  --color-amber: var(--amber);
+  --color-sky-blue: var(--sky-blue);
+  --color-gap-red: var(--gap-red);
+  --color-ready-green: var(--ready-green);
+  --color-mid-gray: var(--mid-gray);
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  --radius: 0.375rem;
+
+  /* First Base brand palette */
+  --field-green: #0D2B1E;
+  --turf-green: #1A4A2E;
+  --chalk-white: #F7F5F0;
+  --amber: #E8A838;
+  --sky-blue: #4A90D9;
+  --gap-red: #C0392B;
+  --ready-green: #27AE60;
+  --mid-gray: #2C2C2A;
+
+  /* Semantic tokens mapped to brand palette */
+  --background: #0D2B1E;
+  --foreground: #F7F5F0;
+  --card: #1A4A2E;
+  --card-foreground: #F7F5F0;
+  --popover: #1A4A2E;
+  --popover-foreground: #F7F5F0;
+  --primary: #E8A838;
+  --primary-foreground: #0D2B1E;
+  --secondary: #1A4A2E;
+  --secondary-foreground: #F7F5F0;
+  --muted: #1f3d2a;
+  --muted-foreground: rgba(247, 245, 240, 0.6);
+  --accent: #E8A838;
+  --accent-foreground: #0D2B1E;
+  --destructive: #C0392B;
+  --destructive-foreground: #F7F5F0;
+  --border: rgba(247, 245, 240, 0.12);
+  --input: rgba(247, 245, 240, 0.08);
+  --ring: #E8A838;
+  --chart-1: #E8A838;
+  --chart-2: #4A90D9;
+  --chart-3: #27AE60;
+  --chart-4: #C0392B;
+  --chart-5: #F7F5F0;
+  --sidebar: #1A4A2E;
+  --sidebar-foreground: #F7F5F0;
+  --sidebar-primary: #E8A838;
+  --sidebar-primary-foreground: #0D2B1E;
+  --sidebar-accent: rgba(232, 168, 56, 0.12);
+  --sidebar-accent-foreground: #E8A838;
+  --sidebar-border: rgba(247, 245, 240, 0.1);
+  --sidebar-ring: #E8A838;
 }
 
-.dark {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-500);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.85 0.005 65);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.85 0.005 65);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.85 0.005 65);
-  --secondary: oklch(0.24 0.006 286.033);
-  --secondary-foreground: oklch(0.7 0.005 65);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground:  oklch(0.92 0.005 65);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.488 0.243 264.376);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.85 0.005 65);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground:  oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.488 0.243 264.376);
+/* Custom easing curves */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-sidebar: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
+  html, body, #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Typography system */
+  .font-display {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+  }
+
+  .font-body {
+    font-family: 'Inter', sans-serif;
+  }
+
+  .font-mono-data {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),
   [type="submit"]:not(:disabled),
-  [type="reset"]:not(:disabled),
   a[href],
   select:not(:disabled),
   input[type="checkbox"]:not(:disabled),
   input[type="radio"]:not(:disabled) {
     @apply cursor-pointer;
   }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(247, 245, 240, 0.2);
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(247, 245, 240, 0.35);
+  }
 }
 
 @layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
-   */
   .container {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
+    padding-left: 1rem;
     padding-right: 1rem;
   }
 
@@ -162,16 +190,205 @@
 
   @media (min-width: 640px) {
     .container {
-      padding-left: 1.5rem; /* 24px - tablet padding */
+      padding-left: 1.5rem;
       padding-right: 1.5rem;
     }
   }
 
   @media (min-width: 1024px) {
     .container {
-      padding-left: 2rem; /* 32px - desktop padding */
+      padding-left: 2rem;
       padding-right: 2rem;
-      max-width: 1280px; /* Standard content width */
+      max-width: 1440px;
     }
+  }
+
+  /* First Base specific components */
+  .chalk-divider {
+    height: 1px;
+    background: rgba(247, 245, 240, 0.15);
+    width: 100%;
+  }
+
+  .score-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    background: #E8A838;
+    color: #0D2B1E;
+    border-radius: 20px;
+    padding: 4px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .need-score-high {
+    background: rgba(13, 43, 30, 0.8);
+  }
+  .need-score-medium {
+    background: rgba(13, 43, 30, 0.6);
+  }
+  .need-score-low {
+    background: rgba(13, 43, 30, 0.4);
+  }
+
+  /* Map pin styles */
+  .map-pin-gap {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #C0392B;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+
+  .map-pin-ready {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #27AE60;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+
+  .map-pin-investment {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #E8A838;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+
+  /* Sidebar slide animation */
+  .sidebar-enter {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  .sidebar-enter-active {
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 300ms var(--ease-sidebar), opacity 200ms ease-out;
+  }
+
+  /* Toggle pill animation */
+  .toggle-pill {
+    transition: transform 200ms var(--ease-out);
+  }
+
+  /* Priority list row */
+  .priority-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 150ms ease-out;
+  }
+
+  .priority-row:hover {
+    background: rgba(232, 168, 56, 0.08);
+  }
+
+  .priority-row.active {
+    background: rgba(232, 168, 56, 0.15);
+    border-left: 3px solid #E8A838;
+  }
+
+  /* Gap status banner */
+  .gap-banner-red {
+    background: rgba(192, 57, 43, 0.2);
+    border: 1px solid rgba(192, 57, 43, 0.4);
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+
+  .gap-banner-green {
+    background: rgba(39, 174, 96, 0.2);
+    border: 1px solid rgba(39, 174, 96, 0.4);
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+
+  /* Program type badges */
+  .badge-rbi {
+    background: rgba(232, 168, 56, 0.2);
+    color: #E8A838;
+    border: 1px solid rgba(232, 168, 56, 0.4);
+  }
+
+  .badge-little-league {
+    background: rgba(74, 144, 217, 0.2);
+    color: #4A90D9;
+    border: 1px solid rgba(74, 144, 217, 0.4);
+  }
+
+  .badge-parks-rec {
+    background: rgba(39, 174, 96, 0.2);
+    color: #27AE60;
+    border: 1px solid rgba(39, 174, 96, 0.4);
+  }
+
+  .badge-nonprofit {
+    background: rgba(247, 245, 240, 0.1);
+    color: #F7F5F0;
+    border: 1px solid rgba(247, 245, 240, 0.2);
+  }
+
+  /* Stat value display */
+  .stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #F7F5F0;
+  }
+
+  .stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: rgba(247, 245, 240, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Score bar */
+  .score-bar {
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(247, 245, 240, 0.1);
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    background: #E8A838;
+    border-radius: 2px;
+    transition: width 600ms var(--ease-out);
+  }
+
+  /* Field condition dot */
+  .condition-dot-ready {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #27AE60;
+    flex-shrink: 0;
+  }
+
+  .condition-dot-investment {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #E8A838;
+    flex-shrink: 0;
+  }
+
+  .condition-dot-gap {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #C0392B;
+    flex-shrink: 0;
   }
 }
