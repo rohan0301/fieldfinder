@@ -1,4 +1,4 @@
-// FIRST BASE — Alameda County Data
+// FIELDFINDER — Alameda County Data
 // Real RBI program locations provided by project team.
 // Neighborhood need scores are adjusted downward based on proximity to
 // existing RBI programs (closer = lower urgency for new investment).
@@ -8,6 +8,7 @@ export interface Neighborhood {
   id: string;
   name: string;
   city: string;
+  zipCodes: string[];
   lat: number;
   lng: number;
   // Scoring signals
@@ -30,6 +31,8 @@ export interface Neighborhood {
   suggestedAnchor: OrgAnchor | null;
   polygonColor: string;
   polygonOpacity: number;
+  // Data quality flags
+  statsAreEstimated: boolean; // demographic stats and need scores are estimates, not verified
 }
 
 export interface Field {
@@ -80,6 +83,9 @@ export interface Program {
   // Description shown in Families view sidebar
   description: string;
   notes?: string;
+  // Data quality flags
+  descriptionIsPlaceholder: boolean; // description is generated, not official org copy
+  registrationWindowIsPlaceholder: boolean; // registration details are generic, not verified
 }
 
 // ── NEIGHBORHOODS ──────────────────────────────────────────────
@@ -91,6 +97,7 @@ export const neighborhoods: Neighborhood[] = [
     id: 'sobrante-park',
     name: 'Sobrante Park',
     city: 'Oakland',
+    zipCodes: ['94603'],
     lat: 37.7299,
     lng: -122.1526,
     baseNeedScore: 9.2,
@@ -133,12 +140,14 @@ export const neighborhoods: Neighborhood[] = [
       reviewCount: 48,
       phone: '(510) 238-7275',
       hasGym: true,
-    }
+    },
+    statsAreEstimated: true,
   },
   {
     id: 'east-oakland-69th',
     name: 'East Oakland (69th Ave)',
     city: 'Oakland',
+    zipCodes: ['94605', '94621'],
     lat: 37.7480,
     lng: -122.1820,
     baseNeedScore: 8.7,
@@ -174,11 +183,13 @@ export const neighborhoods: Neighborhood[] = [
       }
     ],
     suggestedAnchor: null,
+    statsAreEstimated: true,
   },
   {
     id: 'west-oakland',
     name: 'West Oakland',
     city: 'Oakland',
+    zipCodes: ['94607', '94612'],
     lat: 37.8060,
     lng: -122.2980,
     baseNeedScore: 8.4,
@@ -220,12 +231,14 @@ export const neighborhoods: Neighborhood[] = [
       reviewCount: 112,
       phone: '(510) 839-2119',
       hasGym: true,
-    }
+    },
+    statsAreEstimated: true,
   },
   {
     id: 'fruitvale',
     name: 'Fruitvale',
     city: 'Oakland',
+    zipCodes: ['94601'],
     lat: 37.7760,
     lng: -122.2270,
     baseNeedScore: 8.1,
@@ -260,11 +273,13 @@ export const neighborhoods: Neighborhood[] = [
       }
     ],
     suggestedAnchor: null,
+    statsAreEstimated: true,
   },
   {
     id: 'elmhurst',
     name: 'Elmhurst',
     city: 'Oakland',
+    zipCodes: ['94603', '94621'],
     lat: 37.7440,
     lng: -122.1680,
     baseNeedScore: 7.8,
@@ -305,12 +320,14 @@ export const neighborhoods: Neighborhood[] = [
       googleRating: 4.4,
       reviewCount: 32,
       hasGym: false,
-    }
+    },
+    statsAreEstimated: true,
   },
   {
     id: 'south-hayward',
     name: 'South Hayward',
     city: 'Hayward',
+    zipCodes: ['94544'],
     lat: 37.6327,
     lng: -122.0814,
     baseNeedScore: 7.6,
@@ -352,12 +369,14 @@ export const neighborhoods: Neighborhood[] = [
       reviewCount: 56,
       phone: '(510) 783-7900',
       hasGym: true,
-    }
+    },
+    statsAreEstimated: true,
   },
   {
     id: 'san-antonio',
     name: 'San Antonio',
     city: 'Oakland',
+    zipCodes: ['94606'],
     lat: 37.7600,
     lng: -122.2400,
     baseNeedScore: 7.4,
@@ -378,11 +397,13 @@ export const neighborhoods: Neighborhood[] = [
     polygonOpacity: 0.28,
     fields: [],
     suggestedAnchor: null,
+    statsAreEstimated: true,
   },
   {
     id: 'seminary',
     name: 'Seminary',
     city: 'Oakland',
+    zipCodes: ['94605'],
     lat: 37.7530,
     lng: -122.1840,
     baseNeedScore: 6.9,
@@ -403,11 +424,13 @@ export const neighborhoods: Neighborhood[] = [
     polygonOpacity: 0.22,
     fields: [],
     suggestedAnchor: null,
+    statsAreEstimated: true,
   },
   {
     id: 'san-leandro-washington',
     name: 'Washington Manor',
     city: 'San Leandro',
+    zipCodes: ['94579'],
     lat: 37.6935,
     lng: -122.1590,
     baseNeedScore: 6.4,
@@ -442,11 +465,13 @@ export const neighborhoods: Neighborhood[] = [
       }
     ],
     suggestedAnchor: null,
+    statsAreEstimated: true,
   },
   {
     id: 'fremont-area',
     name: 'Fremont (Central)',
     city: 'Fremont',
+    zipCodes: ['94538'],
     lat: 37.5485,
     lng: -121.9886,
     baseNeedScore: 5.2,
@@ -481,8 +506,43 @@ export const neighborhoods: Neighborhood[] = [
       }
     ],
     suggestedAnchor: null,
+    statsAreEstimated: true,
   }
 ];
+
+export function findNeighborhoodMatches(query: string, limit = 5): Neighborhood[] {
+  const q = query.trim().toLowerCase();
+  if (q.length < 2) return [];
+
+  const numericQuery = q.replace(/\D/g, '');
+  const scored = neighborhoods
+    .map((n) => {
+      const name = n.name.toLowerCase();
+      const city = n.city.toLowerCase();
+      const exactZip = numericQuery.length === 5 && n.zipCodes.includes(numericQuery);
+      const partialZip = numericQuery.length >= 2 && n.zipCodes.some((zip) => zip.startsWith(numericQuery));
+      const nameStarts = name.startsWith(q);
+      const nameIncludes = name.includes(q);
+      const cityStarts = city.startsWith(q);
+      const cityIncludes = city.includes(q);
+
+      if (exactZip) return { neighborhood: n, score: 100 };
+      if (nameStarts) return { neighborhood: n, score: 90 };
+      if (partialZip) return { neighborhood: n, score: 80 };
+      if (cityStarts) return { neighborhood: n, score: 70 };
+      if (nameIncludes) return { neighborhood: n, score: 60 };
+      if (cityIncludes) return { neighborhood: n, score: 50 };
+      return null;
+    })
+    .filter((match): match is { neighborhood: Neighborhood; score: number } => match !== null)
+    .sort((a, b) => b.score - a.score || b.neighborhood.needScore - a.neighborhood.needScore);
+
+  return scored.slice(0, limit).map((match) => match.neighborhood);
+}
+
+export function findBestNeighborhoodMatch(query: string): Neighborhood | null {
+  return findNeighborhoodMatches(query, 1)[0] ?? null;
+}
 
 // ── PROGRAMS (Families View) ───────────────────────────────────
 // Real RBI program locations provided by project team.
@@ -510,6 +570,8 @@ export const programs: Program[] = [
     coverageRadiusMiles: 5,
     description: 'The Giants Community Fund RBI program is headquartered at Oracle Park, home of the San Francisco Giants. This program provides youth baseball and softball opportunities across the Bay Area, with a focus on underserved communities.',
     notes: 'Located at Oracle Park — the official headquarters for the Giants Community Fund.',
+    descriptionIsPlaceholder: true,
+    registrationWindowIsPlaceholder: true,
   },
   {
     id: 'oakland-babe-ruth-rbi',
@@ -531,6 +593,8 @@ export const programs: Program[] = [
     coverageRadiusMiles: 5,
     description: 'Oakland Babe Ruth/Cal Ripken Nike RBI operates out of Carter-Gilmore/Greenman Field in East Oakland. This program serves youth ages 4–18 with a focus on providing baseball access to underserved Oakland communities.',
     notes: 'Home field: Carter-Gilmore/Greenman Field at 1390 66th Avenue, Oakland, CA 94621. Mailing: PO Box 27549, Oakland, CA 94602.',
+    descriptionIsPlaceholder: true,
+    registrationWindowIsPlaceholder: true,
   },
   {
     id: 'bay-area-ballplayers',
@@ -553,6 +617,8 @@ export const programs: Program[] = [
     coverageRadiusMiles: 6,
     description: 'Bay Area Ballplayers is a nonprofit organization based in Moraga providing year-round baseball and softball training, development, and league play for youth across the East Bay. Programs emphasize skill development and community.',
     notes: 'Located in Moraga, serving youth across Contra Costa and Alameda Counties.',
+    descriptionIsPlaceholder: true,
+    registrationWindowIsPlaceholder: true,
   },
   {
     id: 'loyal-to-my-soil',
@@ -574,6 +640,30 @@ export const programs: Program[] = [
     coverageRadiusMiles: 8,
     description: 'Loyal To My Soil is a community-based organization in Danville dedicated to providing youth baseball access and mentorship. The program serves youth across the Tri-Valley area with a focus on character development through sport.',
     notes: 'Serving the Tri-Valley area including Danville, San Ramon, and surrounding communities.',
+    descriptionIsPlaceholder: true,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'bushrod-park-little-league',
+    name: 'Bushrod Park Little League (NOLL/SOLL)',
+    orgType: 'little-league',
+    lat: 37.844527,
+    lng: -122.265089,
+    city: 'Oakland',
+    address: '560 59th St, Oakland, CA 94609',
+    ageMin: 4,
+    ageMax: 16,
+    cost: 'low-cost',
+    equipmentProvided: true,
+    season: 'Spring/Summer',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'Bushrod Park is home to the North Oakland Little League (NOLL) and South Oakland Little League (SOLL), providing organized youth baseball in the heart of North Oakland. The park features dedicated baseball fields actively used for league play and youth development.',
+    notes: 'Known NOLL/SOLL Little League home field. Already organized and actively served.',
+    descriptionIsPlaceholder: true,
+    registrationWindowIsPlaceholder: true,
   },
 ];
 

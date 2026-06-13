@@ -1,5 +1,5 @@
 /* =============================================================
-   FIRST BASE — NIGHT DIAMOND DESIGN SYSTEM
+   FIELDFINDER — NIGHT DIAMOND DESIGN SYSTEM
    Stadium night-game aesthetic: dark field-green base,
    amber scoreboard accents, chalk-white typography.
    The map is the product. Everything else serves the map.
@@ -48,7 +48,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* First Base brand tokens */
+  /* FieldFinder brand tokens */
   --color-field-green: var(--field-green);
   --color-turf-green: var(--turf-green);
   --color-chalk-white: var(--chalk-white);
@@ -62,14 +62,14 @@
 :root {
   --radius: 0.375rem;
 
-  /* First Base brand palette */
+  /* FieldFinder brand palette */
   --field-green: #0D2B1E;
   --turf-green: #1A4A2E;
   --chalk-white: #F7F5F0;
-  --amber: #E8A838;
-  --sky-blue: #4A90D9;
+  --amber: #F2C14E;
+  --sky-blue: #BFEA7C;
   --gap-red: #C0392B;
-  --ready-green: #27AE60;
+  --ready-green: #4ADE80;
   --mid-gray: #2C2C2A;
 
   /* Semantic tokens mapped to brand palette */
@@ -79,32 +79,32 @@
   --card-foreground: #F7F5F0;
   --popover: #1A4A2E;
   --popover-foreground: #F7F5F0;
-  --primary: #E8A838;
+  --primary: #F2C14E;
   --primary-foreground: #0D2B1E;
   --secondary: #1A4A2E;
   --secondary-foreground: #F7F5F0;
   --muted: #1f3d2a;
   --muted-foreground: rgba(247, 245, 240, 0.6);
-  --accent: #E8A838;
+  --accent: #F2C14E;
   --accent-foreground: #0D2B1E;
   --destructive: #C0392B;
   --destructive-foreground: #F7F5F0;
   --border: rgba(247, 245, 240, 0.12);
   --input: rgba(247, 245, 240, 0.08);
-  --ring: #E8A838;
-  --chart-1: #E8A838;
-  --chart-2: #4A90D9;
-  --chart-3: #27AE60;
+  --ring: #F2C14E;
+  --chart-1: #F2C14E;
+  --chart-2: #BFEA7C;
+  --chart-3: #4ADE80;
   --chart-4: #C0392B;
   --chart-5: #F7F5F0;
   --sidebar: #1A4A2E;
   --sidebar-foreground: #F7F5F0;
-  --sidebar-primary: #E8A838;
+  --sidebar-primary: #F2C14E;
   --sidebar-primary-foreground: #0D2B1E;
   --sidebar-accent: rgba(232, 168, 56, 0.12);
-  --sidebar-accent-foreground: #E8A838;
+  --sidebar-accent-foreground: #F2C14E;
   --sidebar-border: rgba(247, 245, 240, 0.1);
-  --sidebar-ring: #E8A838;
+  --sidebar-ring: #F2C14E;
 }
 
 /* Custom easing curves */
@@ -203,7 +203,7 @@
     }
   }
 
-  /* First Base specific components */
+  /* FieldFinder specific components */
   .chalk-divider {
     height: 1px;
     background: rgba(247, 245, 240, 0.15);
@@ -213,7 +213,7 @@
   .score-badge {
     font-family: 'Barlow Condensed', sans-serif;
     font-weight: 700;
-    background: #E8A838;
+    background: #F2C14E;
     color: #0D2B1E;
     border-radius: 20px;
     padding: 4px 14px;
@@ -246,7 +246,7 @@
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: #27AE60;
+    background: #4ADE80;
     border: 2px solid white;
     box-shadow: 0 2px 6px rgba(0,0,0,0.4);
   }
@@ -255,7 +255,7 @@
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: #E8A838;
+    background: #F2C14E;
     border: 2px solid white;
     box-shadow: 0 2px 6px rgba(0,0,0,0.4);
   }
@@ -294,7 +294,7 @@
 
   .priority-row.active {
     background: rgba(232, 168, 56, 0.15);
-    border-left: 3px solid #E8A838;
+    border-left: 3px solid #F2C14E;
   }
 
   /* Gap status banner */
@@ -315,19 +315,19 @@
   /* Program type badges */
   .badge-rbi {
     background: rgba(232, 168, 56, 0.2);
-    color: #E8A838;
+    color: #F2C14E;
     border: 1px solid rgba(232, 168, 56, 0.4);
   }
 
   .badge-little-league {
     background: rgba(74, 144, 217, 0.2);
-    color: #4A90D9;
+    color: #BFEA7C;
     border: 1px solid rgba(74, 144, 217, 0.4);
   }
 
   .badge-parks-rec {
     background: rgba(39, 174, 96, 0.2);
-    color: #27AE60;
+    color: #4ADE80;
     border: 1px solid rgba(39, 174, 96, 0.4);
   }
 
@@ -362,7 +362,7 @@
 
   .score-bar-fill {
     height: 100%;
-    background: #E8A838;
+    background: #F2C14E;
     border-radius: 2px;
     transition: width 600ms var(--ease-out);
   }
@@ -372,7 +372,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #27AE60;
+    background: #4ADE80;
     flex-shrink: 0;
   }
 
@@ -380,7 +380,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #E8A838;
+    background: #F2C14E;
     flex-shrink: 0;
   }
 

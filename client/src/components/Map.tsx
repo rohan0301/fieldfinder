@@ -86,14 +86,15 @@ declare global {
   }
 }
 
-const API_KEY = import.meta.env.VITE_FRONTEND_FORGE_API_KEY;
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+const FORGE_API_KEY = import.meta.env.VITE_FRONTEND_FORGE_API_KEY;
 const FORGE_BASE_URL =
   import.meta.env.VITE_FRONTEND_FORGE_API_URL ||
   "https://forge.butterfly-effect.dev";
-// Use local Vite proxy in dev to avoid origin check issues with 127.0.0.1
-const MAPS_PROXY_URL = import.meta.env.DEV
-  ? '/maps-proxy'
-  : `${FORGE_BASE_URL}/v1/maps/proxy`;
+
+const MAPS_SCRIPT_URL = GOOGLE_MAPS_API_KEY
+  ? `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`
+  : `${import.meta.env.DEV ? "/maps-proxy" : `${FORGE_BASE_URL}/v1/maps/proxy`}/maps/api/js?key=${FORGE_API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
 
 let mapScriptPromise: Promise<void> | null = null;
 
@@ -107,7 +108,7 @@ function loadMapScript(): Promise<void> {
 
   mapScriptPromise = new Promise<void>((resolve, reject) => {
     const script = document.createElement("script");
-    script.src = `${MAPS_PROXY_URL}/maps/api/js?key=${API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
+    script.src = MAPS_SCRIPT_URL;
     // Do NOT set crossOrigin on the script tag — the proxy uses CORS headers
     // but adding crossOrigin attribute changes the CORS mode and can break loading
     script.onload = () => {

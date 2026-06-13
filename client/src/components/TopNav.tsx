@@ -1,10 +1,10 @@
-// TopNav — First Base
+// TopNav — FieldFinder
 // 56px tall. Field-green background. Brand wordmark, view toggle, search.
 // The toggle is the most important UI element — amber pill slides between states.
 
 import { useState, useRef, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
-import { neighborhoods } from '@/lib/data';
+import { findNeighborhoodMatches, neighborhoods } from '@/lib/data';
 
 type ViewMode = 'rbi' | 'parents';
 
@@ -21,16 +21,7 @@ export function TopNav({ viewMode, onViewChange, onSearch, searchQuery }: TopNav
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (searchQuery.trim().length > 1) {
-      const q = searchQuery.toLowerCase();
-      const results = neighborhoods.filter(n =>
-        n.name.toLowerCase().includes(q) ||
-        n.city.toLowerCase().includes(q)
-      );
-      setSearchResults(results.slice(0, 5));
-    } else {
-      setSearchResults([]);
-    }
+    setSearchResults(findNeighborhoodMatches(searchQuery));
   }, [searchQuery]);
 
   const handleSearchSelect = (neighborhood: typeof neighborhoods[0]) => {
@@ -50,7 +41,7 @@ export function TopNav({ viewMode, onViewChange, onSearch, searchQuery }: TopNav
         <div className="w-8 h-8 flex items-center justify-center">
           <img
             src="/manus-storage/firstbase-logo_09b7bbd0.png"
-            alt="First Base logo"
+            alt="FieldFinder logo"
             style={{ width: '32px', height: '32px', objectFit: 'contain' }}
           />
         </div>
@@ -63,7 +54,7 @@ export function TopNav({ viewMode, onViewChange, onSearch, searchQuery }: TopNav
             letterSpacing: '0.04em',
           }}
         >
-          FIRST BASE
+          FIELDFINDER
         </span>
         <span
           className="hidden lg:block text-xs ml-1"
@@ -85,7 +76,7 @@ export function TopNav({ viewMode, onViewChange, onSearch, searchQuery }: TopNav
         <div
           className="absolute top-1 bottom-1 rounded-full"
           style={{
-            background: '#E8A838',
+            background: '#F2C14E',
             width: 'calc(50% - 4px)',
             left: viewMode === 'rbi' ? '4px' : 'calc(50%)',
             transition: 'left 200ms cubic-bezier(0.23, 1, 0.32, 1)',
@@ -127,9 +118,9 @@ export function TopNav({ viewMode, onViewChange, onSearch, searchQuery }: TopNav
           className="flex items-center gap-2 px-3 py-2 rounded-lg"
           style={{
             background: 'rgba(247,245,240,0.07)',
-            border: `1px solid ${searchFocused ? 'rgba(232,168,56,0.5)' : 'rgba(247,245,240,0.12)'}`,
+            border: `1px solid ${searchFocused ? 'rgba(242,193,78,0.5)' : 'rgba(247,245,240,0.12)'}`,
             transition: 'border-color 200ms ease-out, box-shadow 200ms ease-out',
-            boxShadow: searchFocused ? '0 0 0 3px rgba(232,168,56,0.1)' : 'none',
+            boxShadow: searchFocused ? '0 0 0 3px rgba(242,193,78,0.1)' : 'none',
           }}
         >
           <Search size={14} style={{ color: 'rgba(247,245,240,0.45)', flexShrink: 0 }} />
@@ -176,7 +167,7 @@ export function TopNav({ viewMode, onViewChange, onSearch, searchQuery }: TopNav
                     {n.name}
                   </div>
                   <div style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(247,245,240,0.5)', fontSize: '11px' }}>
-                    {n.city} · Need Score {n.needScore.toFixed(1)}/10
+                    {n.city} · {n.zipCodes.join(', ')} · Need Score {n.needScore.toFixed(1)}/10
                   </div>
                 </div>
                 {n.gapStatus === 'gap' && (

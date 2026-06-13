@@ -1,4 +1,4 @@
-// MapView — First Base
+// MapView — FieldFinder
 // Full-bleed Google Maps with custom dark style.
 // RBI view: neighborhood shading, coverage rings, field pins.
 // Parent view: program pins by type.
@@ -19,7 +19,7 @@ interface MapViewProps {
   searchQuery: string;
   programFilters: {
     costFreeOnly: boolean;
-    programType: 'all' | 'rbi' | 'little-league' | 'parks-rec' | 'nonprofit';
+    programTypes: Program['orgType'][];
   };
   userLocation: { lat: number; lng: number } | null;
   sidebarOpen: boolean;
@@ -28,6 +28,16 @@ interface MapViewProps {
 // Alameda County center
 const ALAMEDA_CENTER = { lat: 37.6879, lng: -122.1598 };
 const ALAMEDA_ZOOM = 11;
+
+const COLORS = {
+  amber: '#F2C14E',
+  brightAmber: '#FFD166',
+  readyGreen: '#4ADE80',
+  fieldGreen: '#0D2B1E',
+  turfGreen: '#1A4A2E',
+  chalkWhite: '#F7F5F0',
+  gapRed: '#E05243',
+};
 
 // Custom dark map style — field-green palette
 const MAP_STYLE: google.maps.MapTypeStyle[] = [
@@ -66,11 +76,13 @@ function createNeighborhoodMarker(
     map,
     center: { lat: neighborhood.lat, lng: neighborhood.lng },
     radius: 1200,
-    fillColor: '#0D2B18',
-    fillOpacity: isSelected ? Math.min(opacity + 0.15, 0.95) : opacity,
-    strokeColor: isSelected ? '#E8A838' : 'rgba(247,245,240,0.3)',
-    strokeOpacity: isSelected ? 1 : 0.5,
-    strokeWeight: isSelected ? 2 : 1,
+    fillColor: COLORS.amber,
+    fillOpacity: isSelected
+      ? Math.min(opacity * 0.5 + 0.24, 0.72)
+      : Math.min(opacity * 0.42 + 0.1, 0.48),
+    strokeColor: isSelected ? COLORS.brightAmber : 'rgba(255, 209, 102, 0.78)',
+    strokeOpacity: isSelected ? 1 : 0.86,
+    strokeWeight: isSelected ? 3 : 1.5,
     clickable: true,
   });
 
@@ -86,8 +98,8 @@ function createFieldPin(
   name: string,
   onClick?: () => void
 ): google.maps.Marker {
-  const color = condition === 'ready' ? '#27AE60' :
-                condition === 'investment-needed' ? '#E8A838' : '#C0392B';
+  const color = condition === 'ready' ? COLORS.readyGreen :
+                condition === 'investment-needed' ? COLORS.brightAmber : COLORS.gapRed;
 
   const marker = new google.maps.Marker({
     map,
@@ -114,9 +126,9 @@ function createProgramPin(
   onClick: () => void
 ): google.maps.Marker {
   const colors: Record<Program['orgType'], string> = {
-    'rbi': '#E8A838',
-    'little-league': '#4A90D9',
-    'parks-rec': '#27AE60',
+    'rbi': COLORS.brightAmber,
+    'little-league': '#BFEA7C',
+    'parks-rec': COLORS.readyGreen,
     'nonprofit': 'rgba(247,245,240,0.7)',
   };
   const color = colors[program.orgType];
@@ -148,11 +160,11 @@ function createCoverageRing(
     map,
     center: { lat: program.lat, lng: program.lng },
     radius: program.coverageRadiusMiles * 1609.34,
-    fillColor: '#4A90D9',
-    fillOpacity: 0.04,
-    strokeColor: '#4A90D9',
-    strokeOpacity: 0.25,
-    strokeWeight: 1,
+    fillColor: COLORS.readyGreen,
+    fillOpacity: 0.06,
+    strokeColor: COLORS.readyGreen,
+    strokeOpacity: 0.42,
+    strokeWeight: 1.5,
     clickable: false,
   });
 }
@@ -226,7 +238,7 @@ export function MapViewComponent({
 
     const filteredPrograms = programs.filter((p) => {
       if (programFilters.costFreeOnly && p.cost !== 'free') return false;
-      if (programFilters.programType !== 'all' && p.orgType !== programFilters.programType) return false;
+      if (programFilters.programTypes.length > 0 && !programFilters.programTypes.includes(p.orgType)) return false;
       return true;
     });
 
@@ -349,30 +361,30 @@ export function MapViewComponent({
         {viewMode === 'rbi' ? (
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full" style={{ background: '#C0392B' }} />
+              <div className="w-2.5 h-2.5 rounded-full" style={{ background: COLORS.gapRed }} />
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>Gap field</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full" style={{ background: '#27AE60' }} />
+              <div className="w-2.5 h-2.5 rounded-full" style={{ background: COLORS.readyGreen }} />
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>Ready</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full" style={{ background: '#E8A838' }} />
+              <div className="w-2.5 h-2.5 rounded-full" style={{ background: COLORS.brightAmber }} />
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>Needs investment</span>
             </div>
           </div>
         ) : (
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: '#E8A838' }} />
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: COLORS.brightAmber }} />
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>RBI</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: '#4A90D9' }} />
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: '#BFEA7C' }} />
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>Little League</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: '#27AE60' }} />
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: COLORS.readyGreen }} />
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>Parks & Rec</span>
             </div>
           </div>
@@ -385,15 +397,15 @@ export function MapViewComponent({
           className="absolute top-4 left-4 max-w-xs px-4 py-3 rounded-lg"
           style={{
             background: 'rgba(13,43,30,0.92)',
-            border: '1px solid rgba(232,168,56,0.3)',
+            border: '1px solid rgba(242,193,78,0.3)',
             backdropFilter: 'blur(8px)',
           }}
         >
-          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '13px', color: '#E8A838', letterSpacing: '0.05em', marginBottom: '4px' }}>
+          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '13px', color: COLORS.brightAmber, letterSpacing: '0.05em', marginBottom: '4px' }}>
             PROXIMITY-ADJUSTED SCORES
           </div>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(247,245,240,0.7)', lineHeight: 1.5 }}>
-            Need scores are reduced for neighborhoods near existing RBI programs. Darker circles = higher priority. Click any circle to see the full profile.
+            Need scores are reduced for neighborhoods near existing RBI programs. Brighter circles = higher priority. Click any circle to see the full profile.
           </div>
         </div>
       )}
@@ -404,11 +416,11 @@ export function MapViewComponent({
           className="absolute top-4 left-4 max-w-xs px-4 py-3 rounded-lg"
           style={{
             background: 'rgba(13,43,30,0.92)',
-            border: '1px solid rgba(74,144,217,0.3)',
+            border: '1px solid rgba(74,222,128,0.3)',
             backdropFilter: 'blur(8px)',
           }}
         >
-          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '13px', color: '#4A90D9', letterSpacing: '0.05em', marginBottom: '4px' }}>
+          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '13px', color: COLORS.readyGreen, letterSpacing: '0.05em', marginBottom: '4px' }}>
             4 PROGRAMS · BAY AREA
           </div>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(247,245,240,0.7)', lineHeight: 1.5 }}>

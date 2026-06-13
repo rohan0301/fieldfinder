@@ -1,4 +1,4 @@
-// NeighborhoodSidebar — First Base
+// NeighborhoodSidebar — FieldFinder
 // RBI Officials view sidebar.
 // Shows neighborhood profile with need score, stats, fields, anchor, and CTA.
 // Slides in from left on neighborhood click.
@@ -36,7 +36,7 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
         <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
           Sort by
         </span>
-        <button className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(232,168,56,0.15)', color: '#E8A838', fontFamily: "'Inter', sans-serif", fontSize: '11px' }}>
+        <button className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(242,193,78,0.15)', color: '#F2C14E', fontFamily: "'Inter', sans-serif", fontSize: '11px' }}>
           Need Score
         </button>
         <button className="text-xs px-2 py-0.5 rounded" style={{ color: 'rgba(247,245,240,0.35)', fontFamily: "'Inter', sans-serif", fontSize: '11px' }}>
@@ -55,8 +55,8 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
             onClick={() => onSelectNeighborhood(n)}
             className="w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-150"
             style={{
-              background: selectedId === n.id ? 'rgba(232,168,56,0.12)' : 'transparent',
-              borderLeft: selectedId === n.id ? '3px solid #E8A838' : '3px solid transparent',
+              background: selectedId === n.id ? 'rgba(242,193,78,0.12)' : 'transparent',
+              borderLeft: selectedId === n.id ? '3px solid #F2C14E' : '3px solid transparent',
             }}
           >
             {/* Rank */}
@@ -79,11 +79,11 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
 
             {/* Score bar + value */}
             <div className="flex-shrink-0 flex flex-col items-end gap-1">
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', color: '#E8A838', fontWeight: 500 }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', color: '#F2C14E', fontWeight: 500 }}>
                 {n.needScore.toFixed(1)}
               </span>
               <div style={{ width: '48px', height: '3px', background: 'rgba(247,245,240,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
-                <div style={{ width: `${(n.needScore / 10) * 100}%`, height: '100%', background: '#E8A838', borderRadius: '2px' }} />
+                <div style={{ width: `${(n.needScore / 10) * 100}%`, height: '100%', background: '#F2C14E', borderRadius: '2px' }} />
               </div>
             </div>
 
@@ -103,7 +103,7 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.5)' }}>No RBI affiliate within 4mi</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full" style={{ background: '#27AE60' }} />
+            <div className="w-2 h-2 rounded-full" style={{ background: '#4ADE80' }} />
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.5)' }}>Covered</span>
           </div>
         </div>
@@ -135,16 +135,21 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
           </div>
           <div className="flex items-start gap-2 flex-shrink-0">
             {/* Score badge */}
-            <div
-              className="flex flex-col items-center px-3 py-1.5 rounded-xl"
-              style={{ background: '#E8A838' }}
-            >
-              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '24px', color: '#0D2B1E', lineHeight: 1 }}>
-                {neighborhood.needScore.toFixed(1)}
-              </span>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', color: 'rgba(13,43,30,0.7)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                / 10
-              </span>
+            <div className="flex flex-col items-center">
+              <div
+                className="flex flex-col items-center px-3 py-1.5 rounded-xl"
+                style={{ background: '#F2C14E' }}
+              >
+                <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '24px', color: '#0D2B1E', lineHeight: 1 }}>
+                  {neighborhood.needScore.toFixed(1)}
+                </span>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', color: 'rgba(13,43,30,0.7)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                  / 10
+                </span>
+              </div>
+              {neighborhood.statsAreEstimated && (
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', color: 'rgba(242,193,78,0.6)', fontStyle: 'italic', marginTop: '3px' }}>(ph data)</span>
+              )}
             </div>
             <button
               onClick={onClose}
@@ -165,6 +170,11 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
 
         {/* Stats strip */}
         <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
+          {neighborhood.statsAreEstimated && (
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(242,193,78,0.6)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
+              ph data — stats are estimates
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-0.5">
               <div className="flex items-center gap-1.5">
@@ -214,16 +224,16 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
           <div
             className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg"
             style={{
-              background: isGap ? 'rgba(192,57,43,0.15)' : 'rgba(39,174,96,0.15)',
-              border: `1px solid ${isGap ? 'rgba(192,57,43,0.35)' : 'rgba(39,174,96,0.35)'}`,
+              background: isGap ? 'rgba(192,57,43,0.15)' : 'rgba(74,222,128,0.15)',
+              border: `1px solid ${isGap ? 'rgba(192,57,43,0.35)' : 'rgba(74,222,128,0.35)'}`,
             }}
           >
             {isGap ? (
               <AlertTriangle size={14} style={{ color: '#C0392B', flexShrink: 0 }} />
             ) : (
-              <CheckCircle size={14} style={{ color: '#27AE60', flexShrink: 0 }} />
+              <CheckCircle size={14} style={{ color: '#4ADE80', flexShrink: 0 }} />
             )}
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: isGap ? '#C0392B' : '#27AE60', fontWeight: 500 }}>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: isGap ? '#C0392B' : '#4ADE80', fontWeight: 500 }}>
               {isGap
                 ? `No RBI affiliate within ${neighborhood.milestoNearestAffiliate} miles`
                 : 'Affiliate present — coverage confirmed'}
@@ -233,8 +243,13 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
 
         {/* Demographics */}
         <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
-          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
-            Demographics
+          <div className="flex items-center gap-2" style={{ marginBottom: '8px' }}>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              Demographics
+            </span>
+            {neighborhood.statsAreEstimated && (
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(242,193,78,0.6)', fontStyle: 'italic' }}>(ph data)</span>
+            )}
           </div>
           <div className="flex gap-3">
             <div className="flex-1">
@@ -246,7 +261,7 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.45)' }}>Latino</div>
             </div>
             <div className="flex-1">
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', color: '#E8A838' }}>{neighborhood.sviScore.toFixed(2)}</div>
+              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', color: '#F2C14E' }}>{neighborhood.sviScore.toFixed(2)}</div>
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.45)' }}>CDC SVI</div>
             </div>
           </div>
@@ -268,8 +283,8 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
                   <div
                     className="mt-1 flex-shrink-0 w-2.5 h-2.5 rounded-full"
                     style={{
-                      background: field.condition === 'ready' ? '#27AE60' :
-                                  field.condition === 'investment-needed' ? '#E8A838' : '#C0392B'
+                      background: field.condition === 'ready' ? '#4ADE80' :
+                                  field.condition === 'investment-needed' ? '#F2C14E' : '#C0392B'
                     }}
                   />
                   <div className="flex-1 min-w-0">
@@ -278,13 +293,13 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
                     </div>
                     <div className="flex items-center gap-2 mt-0.5">
                       <div className="flex items-center gap-1">
-                        <Star size={10} style={{ color: '#E8A838', fill: '#E8A838' }} />
+                        <Star size={10} style={{ color: '#F2C14E', fill: '#F2C14E' }} />
                         <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>
                           {field.googleRating} ({field.reviewCount})
                         </span>
                       </div>
                       {field.isRecCenter && (
-                        <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(74,144,217,0.15)', color: '#4A90D9', fontSize: '10px', fontFamily: "'Inter', sans-serif" }}>
+                        <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(191,234,124,0.15)', color: '#BFEA7C', fontSize: '10px', fontFamily: "'Inter', sans-serif" }}>
                           Rec Center
                         </span>
                       )}
@@ -307,14 +322,17 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
         {/* Suggested anchor */}
         {neighborhood.suggestedAnchor && (
           <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
-            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
-              Suggested Anchor
+            <div className="flex items-center gap-2" style={{ marginBottom: '10px' }}>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Suggested Anchor
+              </span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(242,193,78,0.6)', fontStyle: 'italic' }}>(ph data)</span>
             </div>
             <div
               className="flex items-start gap-3 p-3 rounded-lg"
-              style={{ background: 'rgba(232,168,56,0.06)', border: '1px solid rgba(232,168,56,0.2)' }}
+              style={{ background: 'rgba(242,193,78,0.06)', border: '1px solid rgba(242,193,78,0.2)' }}
             >
-              <Building2 size={16} style={{ color: '#E8A838', flexShrink: 0, marginTop: '2px' }} />
+              <Building2 size={16} style={{ color: '#F2C14E', flexShrink: 0, marginTop: '2px' }} />
               <div className="flex-1">
                 <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#F7F5F0', fontWeight: 500 }}>
                   {neighborhood.suggestedAnchor.name}
@@ -327,13 +345,13 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Star size={10} style={{ color: '#E8A838', fill: '#E8A838' }} />
+                    <Star size={10} style={{ color: '#F2C14E', fill: '#F2C14E' }} />
                     <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>
                       {neighborhood.suggestedAnchor.googleRating}
                     </span>
                   </div>
                   {neighborhood.suggestedAnchor.hasGym && (
-                    <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(39,174,96,0.15)', color: '#27AE60', fontSize: '10px', fontFamily: "'Inter', sans-serif" }}>
+                    <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(74,222,128,0.15)', color: '#4ADE80', fontSize: '10px', fontFamily: "'Inter', sans-serif" }}>
                       Has Gym
                     </span>
                   )}
@@ -365,7 +383,7 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
               <div key={signal.label} className="flex items-center gap-2.5">
                 <div
                   className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                  style={{ background: signal.active ? '#E8A838' : 'rgba(247,245,240,0.2)' }}
+                  style={{ background: signal.active ? '#F2C14E' : 'rgba(247,245,240,0.2)' }}
                 />
                 <span style={{
                   fontFamily: "'Inter', sans-serif",
@@ -388,7 +406,7 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
         <button
           className="w-full py-3 rounded-lg font-bold text-sm transition-all duration-150 active:scale-[0.98]"
           style={{
-            background: '#E8A838',
+            background: '#F2C14E',
             color: '#0D2B1E',
             fontFamily: "'Barlow Condensed', sans-serif",
             fontWeight: 700,

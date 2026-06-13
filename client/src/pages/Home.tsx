@@ -1,4 +1,4 @@
-// Home — First Base
+// Home — FieldFinder
 // Full-viewport layout: TopNav (56px) + [Sidebar (380px) | Map (flex-1)]
 // Night Diamond design: dark field-green, amber accents, chalk-white text.
 
@@ -8,7 +8,7 @@ import { NeighborhoodSidebar } from '@/components/NeighborhoodSidebar';
 import { ProgramSidebar, type ProgramFilters } from '@/components/ProgramSidebar';
 import { MapViewComponent } from '@/components/MapView';
 import type { Neighborhood, Program } from '@/lib/data';
-import { neighborhoods } from '@/lib/data';
+import { findBestNeighborhoodMatch } from '@/lib/data';
 import { LocateFixed } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -25,7 +25,7 @@ export default function Home() {
     ageMin: null,
     ageMax: null,
     costFreeOnly: false,
-    programType: 'all',
+    programTypes: [],
   });
 
   const handleViewChange = useCallback((mode: ViewMode) => {
@@ -55,17 +55,15 @@ export default function Home() {
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
-    if (query.trim().length > 1) {
-      const match = neighborhoods.find((n) =>
-        n.name.toLowerCase().includes(query.toLowerCase()) ||
-        n.city.toLowerCase().includes(query.toLowerCase())
-      );
-      if (match && viewMode === 'rbi') {
-        setSelectedNeighborhood(match);
-        setSidebarOpen(true);
-      }
+    const match = findBestNeighborhoodMatch(query);
+    if (match) {
+      setSelectedProgram(null);
+      setSelectedNeighborhood(match);
+      setSidebarOpen(true);
+    } else if (!query.trim()) {
+      setSelectedNeighborhood(null);
     }
-  }, [viewMode]);
+  }, []);
 
   const handleLocate = useCallback(() => {
     if (!navigator.geolocation) {
@@ -179,7 +177,7 @@ export default function Home() {
             right: '16px',
             background: '#1A4A2E',
             border: '1px solid rgba(247,245,240,0.15)',
-            color: '#4A90D9',
+            color: '#BFEA7C',
             boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
           }}
         >
