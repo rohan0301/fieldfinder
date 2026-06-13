@@ -204,7 +204,7 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
               <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '15px', color: '#F7F5F0', fontWeight: 500 }}>
                 {neighborhood.milestoNearestAffiliate} mi
               </span>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.35)' }}>to nearest RBI</span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.35)', lineHeight: 1.3 }}>{neighborhood.nearestAffiliateName}</span>
             </div>
           </div>
         </div>

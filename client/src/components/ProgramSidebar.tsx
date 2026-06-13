@@ -180,6 +180,23 @@ function ProgramCard({ program, userLocation, onClose }: {
           </div>
         </div>
 
+        {/* Description */}
+        {program.description && (
+          <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
+              About
+            </div>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(247,245,240,0.75)', lineHeight: 1.6 }}>
+              {program.description}
+            </p>
+            {program.notes && (
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', marginTop: '8px', fontStyle: 'italic', lineHeight: 1.5 }}>
+                {program.notes}
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Address */}
         <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
           <div className="flex items-start gap-2.5">
@@ -370,36 +387,47 @@ function ProgramLegend({ filters, onFilterChange, onSelectProgram }: {
       {/* Program list */}
       <div className="flex-1 overflow-y-auto">
         <div className="px-5 py-3">
-          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
-            {programs.length} Programs in Alameda County
-          </div>
-          <div className="flex flex-col gap-2">
-            {programs.map((p) => (
-              <div
-                key={p.id}
-                onClick={() => onSelectProgram(p)}
-                className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all hover:bg-white/5 active:bg-white/10"
-                style={{ border: '1px solid rgba(247,245,240,0.08)' }}
-              >
-                <div
-                  className="w-3 h-3 rounded-sm flex-shrink-0"
-                  style={{
-                    background: p.orgType === 'rbi' ? '#E8A838' :
-                               p.orgType === 'little-league' ? '#4A90D9' :
-                               p.orgType === 'parks-rec' ? '#27AE60' : 'rgba(247,245,240,0.4)',
-                  }}
-                />
-                <div className="flex-1 min-w-0">
-                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#F7F5F0', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {p.name}
-                  </div>
-                  <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.45)' }}>
-                    {p.city} · Ages {p.ageMin}–{p.ageMax} · {getCostLabel(p.cost)}
-                  </div>
+          {(() => {
+            const filtered = programs.filter(p => {
+              if (filters.costFreeOnly && p.cost !== 'free') return false;
+              if (filters.programType !== 'all' && p.orgType !== filters.programType) return false;
+              return true;
+            });
+            return (
+              <>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
+                  {filtered.length} Program{filtered.length !== 1 ? 's' : ''} · Bay Area
                 </div>
-              </div>
-            ))}
-          </div>
+                <div className="flex flex-col gap-2">
+                  {filtered.map((p) => (
+                    <div
+                      key={p.id}
+                      onClick={() => onSelectProgram(p)}
+                      className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all hover:bg-white/5 active:bg-white/10"
+                      style={{ border: '1px solid rgba(247,245,240,0.08)' }}
+                    >
+                      <div
+                        className="w-3 h-3 rounded-sm flex-shrink-0"
+                        style={{
+                          background: p.orgType === 'rbi' ? '#E8A838' :
+                                     p.orgType === 'little-league' ? '#4A90D9' :
+                                     p.orgType === 'parks-rec' ? '#27AE60' : 'rgba(247,245,240,0.4)',
+                        }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#F7F5F0', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {p.name}
+                        </div>
+                        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.45)' }}>
+                          {p.city} · Ages {p.ageMin}–{p.ageMax} · {getCostLabel(p.cost)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            );
+          })()}
         </div>
       </div>
 

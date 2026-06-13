@@ -379,7 +379,7 @@ export function MapViewComponent({
         )}
       </div>
 
-      {/* Sobrante Park demo callout (RBI view only, when no neighborhood selected) */}
+      {/* RBI view callout — explains scoring logic */}
       {viewMode === 'rbi' && !selectedNeighborhood && (
         <div
           className="absolute top-4 left-4 max-w-xs px-4 py-3 rounded-lg"
@@ -390,10 +390,29 @@ export function MapViewComponent({
           }}
         >
           <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '13px', color: '#E8A838', letterSpacing: '0.05em', marginBottom: '4px' }}>
-            DEMO: SOBRANTE PARK
+            PROXIMITY-ADJUSTED SCORES
           </div>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(247,245,240,0.7)', lineHeight: 1.5 }}>
-            There is a baseball diamond here. No RBI affiliate within 4 miles. Click the neighborhood to see the full profile.
+            Need scores are reduced for neighborhoods near existing RBI programs. Darker circles = higher priority. Click any circle to see the full profile.
+          </div>
+        </div>
+      )}
+
+      {/* Families view callout */}
+      {viewMode === 'parents' && !selectedProgram && (
+        <div
+          className="absolute top-4 left-4 max-w-xs px-4 py-3 rounded-lg"
+          style={{
+            background: 'rgba(13,43,30,0.92)',
+            border: '1px solid rgba(74,144,217,0.3)',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '13px', color: '#4A90D9', letterSpacing: '0.05em', marginBottom: '4px' }}>
+            4 PROGRAMS · BAY AREA
+          </div>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(247,245,240,0.7)', lineHeight: 1.5 }}>
+            Click any pin to see program details, contact info, and directions.
           </div>
         </div>
       )}
