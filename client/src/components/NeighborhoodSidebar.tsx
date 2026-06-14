@@ -1,11 +1,10 @@
 // NeighborhoodSidebar — FieldFinder
 // RBI Officials view sidebar.
-// Shows neighborhood profile with need score, stats, fields, anchor, and CTA.
-// Slides in from left on neighborhood click.
+// Shows ZIP-level profile: RBI score, economic indicators, infrastructure signals, and field notes.
 
-import { X, AlertTriangle, CheckCircle, Building2, MapPin, Users, DollarSign, Navigation, Star } from 'lucide-react';
+import { X, AlertTriangle, CheckCircle, Building2, MapPin, Activity, TrendingUp, FileText } from 'lucide-react';
 import type { Neighborhood } from '@/lib/data';
-import { formatIncome, getConditionLabel } from '@/lib/data';
+import { getConditionLabel } from '@/lib/data';
 import { sortedNeighborhoods } from '@/lib/data';
 
 interface NeighborhoodSidebarProps {
@@ -24,10 +23,10 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
       {/* Header */}
       <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(247,245,240,0.1)' }}>
         <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '18px', color: '#F7F5F0', letterSpacing: '0.03em' }}>
-          PRIORITY NEIGHBORHOODS
+          PRIORITY ZIP CODES
         </div>
         <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(247,245,240,0.5)', marginTop: '4px' }}>
-          Alameda County · Ranked by need score
+          Alameda + SF County · Ranked by RBI Readiness
         </div>
       </div>
 
@@ -37,13 +36,13 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
           Sort by
         </span>
         <button className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(242,193,78,0.15)', color: '#F2C14E', fontFamily: "'Inter', sans-serif", fontSize: '11px' }}>
-          Need Score
+          RBI Score
         </button>
         <button className="text-xs px-2 py-0.5 rounded" style={{ color: 'rgba(247,245,240,0.35)', fontFamily: "'Inter', sans-serif", fontSize: '11px' }}>
-          Gap Distance
+          Free Lunch %
         </button>
         <button className="text-xs px-2 py-0.5 rounded" style={{ color: 'rgba(247,245,240,0.35)', fontFamily: "'Inter', sans-serif", fontSize: '11px' }}>
-          Youth Pop.
+          Field Count
         </button>
       </div>
 
@@ -67,13 +66,13 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
               {i + 1}
             </span>
 
-            {/* Name + city */}
+            {/* Name + city + ZIP */}
             <div className="flex-1 min-w-0">
               <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '15px', color: '#F7F5F0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {n.name}
               </div>
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.45)' }}>
-                {n.city}
+                {n.city} · {n.zipCodes[0]}
               </div>
             </div>
 
@@ -97,17 +96,38 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
 
       {/* Legend */}
       <div className="px-5 py-3" style={{ borderTop: '1px solid rgba(247,245,240,0.1)' }}>
+        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.4)', marginBottom: '6px' }}>
+          Score = SVI (50%) + Field density (25%) + B&GC density (25%) × 10
+        </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full" style={{ background: '#C0392B' }} />
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.5)' }}>No RBI affiliate within 4mi</span>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.5)' }}>No strong org coverage</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 rounded-full" style={{ background: '#4ADE80' }} />
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.5)' }}>Covered</span>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.5)' }}>Org present</span>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function StatCell({ icon, label, value, sub }: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  sub: string;
+}) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <div className="flex items-center gap-1.5">
+        {icon}
+        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
+      </div>
+      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '15px', color: '#F7F5F0', fontWeight: 500 }}>{value}</span>
+      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.35)' }}>{sub}</span>
     </div>
   );
 }
@@ -125,31 +145,23 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <div
-              style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '28px', color: '#F7F5F0', lineHeight: 1.1, letterSpacing: '0.02em' }}
+              style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '24px', color: '#F7F5F0', lineHeight: 1.1, letterSpacing: '0.02em' }}
             >
               {neighborhood.name.toUpperCase()}
             </div>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(247,245,240,0.5)', marginTop: '3px' }}>
-              {neighborhood.city} · Alameda County
+              {neighborhood.city} · ZIP {neighborhood.zipCodes[0]} · {neighborhood.county}
             </div>
           </div>
           <div className="flex items-start gap-2 flex-shrink-0">
             {/* Score badge */}
-            <div className="flex flex-col items-center">
-              <div
-                className="flex flex-col items-center px-3 py-1.5 rounded-xl"
-                style={{ background: '#F2C14E' }}
-              >
-                <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '24px', color: '#0D2B1E', lineHeight: 1 }}>
-                  {neighborhood.needScore.toFixed(1)}
-                </span>
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', color: 'rgba(13,43,30,0.7)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                  / 10
-                </span>
-              </div>
-              {neighborhood.statsAreEstimated && (
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', color: 'rgba(242,193,78,0.6)', fontStyle: 'italic', marginTop: '3px' }}>(ph data)</span>
-              )}
+            <div className="flex flex-col items-center px-3 py-1.5 rounded-xl" style={{ background: '#F2C14E' }}>
+              <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '24px', color: '#0D2B1E', lineHeight: 1 }}>
+                {neighborhood.needScore.toFixed(1)}
+              </span>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', color: 'rgba(13,43,30,0.7)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                / 10
+              </span>
             </div>
             <button
               onClick={onClose}
@@ -160,66 +172,55 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
             </button>
           </div>
         </div>
-        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', marginTop: '4px' }}>
-          Priority Score
+        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.35)', marginTop: '4px' }}>
+          RBI Readiness Score · SVI (50%) + Field density (25%) + B&GC density (25%)
         </div>
       </div>
 
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
 
-        {/* Stats strip */}
+        {/* Key indicators strip */}
         <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
-          {neighborhood.statsAreEstimated && (
-            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(242,193,78,0.6)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '8px' }}>
-              ph data — stats are estimates
-            </div>
-          )}
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-0.5">
-              <div className="flex items-center gap-1.5">
-                <Users size={11} style={{ color: 'rgba(247,245,240,0.4)' }} />
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Youth Pop.</span>
-              </div>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '15px', color: '#F7F5F0', fontWeight: 500 }}>
-                {neighborhood.youthPopulation.toLocaleString()}
-              </span>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.35)' }}>ages 5–18</span>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <div className="flex items-center gap-1.5">
-                <DollarSign size={11} style={{ color: 'rgba(247,245,240,0.4)' }} />
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Median Income</span>
-              </div>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '15px', color: '#F7F5F0', fontWeight: 500 }}>
-                {formatIncome(neighborhood.medianIncome)}
-              </span>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.35)' }}>household/yr</span>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <div className="flex items-center gap-1.5">
-                <AlertTriangle size={11} style={{ color: 'rgba(247,245,240,0.4)' }} />
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Poverty Rate</span>
-              </div>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '15px', color: '#F7F5F0', fontWeight: 500 }}>
-                {neighborhood.povertyRate}%
-              </span>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.35)' }}>below poverty line</span>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <div className="flex items-center gap-1.5">
-                <Navigation size={11} style={{ color: 'rgba(247,245,240,0.4)' }} />
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Nearest Affiliate</span>
-              </div>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '15px', color: '#F7F5F0', fontWeight: 500 }}>
-                {neighborhood.milestoNearestAffiliate} mi
-              </span>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.35)', lineHeight: 1.3 }}>{neighborhood.nearestAffiliateName}</span>
-            </div>
+            <StatCell
+              icon={<TrendingUp size={11} style={{ color: 'rgba(247,245,240,0.4)' }} />}
+              label="Free Lunch %"
+              value={`${(neighborhood.freeLunchPct * 100).toFixed(0)}%`}
+              sub="students qualifying (poverty proxy)"
+            />
+            <StatCell
+              icon={<Activity size={11} style={{ color: 'rgba(247,245,240,0.4)' }} />}
+              label="CDC SVI"
+              value={neighborhood.sviScore.toFixed(3)}
+              sub="social vulnerability (0–1)"
+            />
+            <StatCell
+              icon={<MapPin size={11} style={{ color: 'rgba(247,245,240,0.4)' }} />}
+              label="Baseball Fields"
+              value={neighborhood.baseballFieldCount.toString()}
+              sub="confirmed in ZIP"
+            />
+            <StatCell
+              icon={<Building2 size={11} style={{ color: 'rgba(247,245,240,0.4)' }} />}
+              label="B&GC Locations"
+              value={neighborhood.bgcCount.toString()}
+              sub="Boys & Girls Club in ZIP"
+            />
           </div>
         </div>
 
-        {/* Gap status banner */}
+        {/* Population */}
+        <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
+          <div className="flex items-center justify-between">
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(247,245,240,0.5)' }}>ZIP Population</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', color: '#F7F5F0' }}>
+              {neighborhood.population.toLocaleString()}
+            </span>
+          </div>
+        </div>
+
+        {/* Org coverage banner */}
         <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
           <div
             className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg"
@@ -234,44 +235,64 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
               <CheckCircle size={14} style={{ color: '#4ADE80', flexShrink: 0 }} />
             )}
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: isGap ? '#C0392B' : '#4ADE80', fontWeight: 500 }}>
-              {isGap
-                ? `No RBI affiliate within ${neighborhood.milestoNearestAffiliate} miles`
-                : 'Affiliate present — coverage confirmed'}
+              {isGap ? 'No strong org coverage detected' : 'Org presence confirmed in this ZIP'}
             </span>
           </div>
         </div>
 
-        {/* Demographics */}
+        {/* Deployment readiness signals */}
         <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: '8px' }}>
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              Demographics
-            </span>
-            {neighborhood.statsAreEstimated && (
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(242,193,78,0.6)', fontStyle: 'italic' }}>(ph data)</span>
-            )}
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
+            Deployment Signals
           </div>
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', color: '#F7F5F0' }}>{neighborhood.pctBlack}%</div>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.45)' }}>Black</div>
-            </div>
-            <div className="flex-1">
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', color: '#F7F5F0' }}>{neighborhood.pctLatino}%</div>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.45)' }}>Latino</div>
-            </div>
-            <div className="flex-1">
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', color: '#F2C14E' }}>{neighborhood.sviScore.toFixed(2)}</div>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.45)' }}>CDC SVI</div>
-            </div>
+          <div className="flex flex-col gap-2">
+            {[
+              { label: 'High Social Vulnerability (SVI > 0.3)', active: neighborhood.sviScore > 0.3 },
+              { label: 'High Economic Need (Free Lunch > 70%)', active: neighborhood.freeLunchPct > 0.7 },
+              { label: 'Baseball Field Infrastructure Present', active: neighborhood.baseballFieldCount > 0 },
+              { label: 'Strong Infrastructure (field quality)', active: neighborhood.strongInfrastructure },
+              { label: 'Strong Org Signal (community programs)', active: neighborhood.strongOrg },
+              { label: 'Dense B&GC Network (5+ locations)', active: neighborhood.bgcCount >= 5 },
+            ].map((signal) => (
+              <div key={signal.label} className="flex items-center gap-2.5">
+                <div
+                  className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                  style={{ background: signal.active ? '#F2C14E' : 'rgba(247,245,240,0.2)' }}
+                />
+                <span style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '12px',
+                  color: signal.active ? 'rgba(247,245,240,0.8)' : 'rgba(247,245,240,0.3)',
+                }}>
+                  {signal.label}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Fields */}
+        {/* Nearest affiliate (if known) */}
+        {neighborhood.milestoNearestAffiliate !== null && (
+          <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
+              Nearest RBI Affiliate
+            </div>
+            <div className="flex items-center justify-between">
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(247,245,240,0.7)' }}>
+                {neighborhood.nearestAffiliateName}
+              </span>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', color: '#F2C14E' }}>
+                {neighborhood.milestoNearestAffiliate} mi
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Confirmed fields */}
         {neighborhood.fields.length > 0 && (
           <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
             <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
-              Nearby Fields
+              Confirmed Fields / Sites
             </div>
             <div className="flex flex-col gap-2">
               {neighborhood.fields.map((field) => (
@@ -291,24 +312,22 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
                     <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#F7F5F0', fontWeight: 500 }}>
                       {field.name}
                     </div>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <div className="flex items-center gap-1">
-                        <Star size={10} style={{ color: '#F2C14E', fill: '#F2C14E' }} />
-                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>
-                          {field.googleRating} ({field.reviewCount})
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                      <span style={{
+                        fontFamily: "'Inter', sans-serif", fontSize: '10px',
+                        color: field.condition === 'ready' ? '#4ADE80' : field.condition === 'investment-needed' ? '#F2C14E' : '#C0392B',
+                        fontWeight: 500,
+                      }}>
+                        {getConditionLabel(field.condition)}
+                      </span>
                       {field.isRecCenter && (
-                        <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(191,234,124,0.15)', color: '#BFEA7C', fontSize: '10px', fontFamily: "'Inter', sans-serif" }}>
+                        <span className="px-1.5 py-0.5 rounded" style={{ background: 'rgba(191,234,124,0.15)', color: '#BFEA7C', fontSize: '10px', fontFamily: "'Inter', sans-serif" }}>
                           Rec Center
                         </span>
                       )}
                     </div>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', marginTop: '3px' }}>
-                      {getConditionLabel(field.condition)}
-                    </div>
                     {field.conditionNotes && (
-                      <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.35)', marginTop: '2px', fontStyle: 'italic' }}>
+                      <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', marginTop: '4px', lineHeight: 1.45 }}>
                         {field.conditionNotes}
                       </div>
                     )}
@@ -319,14 +338,11 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
           </div>
         )}
 
-        {/* Suggested anchor */}
+        {/* Suggested anchor org */}
         {neighborhood.suggestedAnchor && (
           <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
-            <div className="flex items-center gap-2" style={{ marginBottom: '10px' }}>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Suggested Anchor
-              </span>
-              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(242,193,78,0.6)', fontStyle: 'italic' }}>(ph data)</span>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
+              Suggested Anchor Org
             </div>
             <div
               className="flex items-start gap-3 p-3 rounded-lg"
@@ -337,21 +353,15 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
                 <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#F7F5F0', fontWeight: 500 }}>
                   {neighborhood.suggestedAnchor.name}
                 </div>
-                <div className="flex items-center gap-3 mt-1">
+                <div className="flex items-center gap-3 mt-1 flex-wrap">
                   <div className="flex items-center gap-1">
                     <MapPin size={10} style={{ color: 'rgba(247,245,240,0.4)' }} />
                     <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>
                       {neighborhood.suggestedAnchor.distanceMiles} mi away
                     </span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Star size={10} style={{ color: '#F2C14E', fill: '#F2C14E' }} />
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>
-                      {neighborhood.suggestedAnchor.googleRating}
-                    </span>
-                  </div>
                   {neighborhood.suggestedAnchor.hasGym && (
-                    <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(74,222,128,0.15)', color: '#4ADE80', fontSize: '10px', fontFamily: "'Inter', sans-serif" }}>
+                    <span className="px-1.5 py-0.5 rounded" style={{ background: 'rgba(74,222,128,0.15)', color: '#4ADE80', fontSize: '10px', fontFamily: "'Inter', sans-serif" }}>
                       Has Gym
                     </span>
                   )}
@@ -366,38 +376,21 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
           </div>
         )}
 
-        {/* Scoring signals */}
-        <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
-          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px' }}>
-            Scoring Signals
+        {/* Field / analyst note */}
+        {neighborhood.fieldNote && (
+          <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(247,245,240,0.08)' }}>
+            <div className="flex items-center gap-2" style={{ marginBottom: '8px' }}>
+              <FileText size={11} style={{ color: 'rgba(247,245,240,0.4)' }} />
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Analyst Notes
+              </span>
+            </div>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(247,245,240,0.65)', lineHeight: 1.6 }}>
+              {neighborhood.fieldNote}
+            </div>
           </div>
-          <div className="flex flex-col gap-2">
-            {[
-              { label: 'High SVI Score', active: neighborhood.sviScore > 0.7 },
-              { label: 'High Youth Density', active: neighborhood.youthPopulation > 1500 },
-              { label: 'No RBI Affiliate (4mi)', active: neighborhood.gapStatus === 'gap' },
-              { label: 'Field Infrastructure Confirmed', active: neighborhood.hasConfirmedField },
-              { label: 'Near High Free-Lunch School', active: neighborhood.nearHighFreeLunchSchool },
-              { label: 'No Little League Nearby', active: neighborhood.noLittleLeagueNearby },
-            ].map((signal) => (
-              <div key={signal.label} className="flex items-center gap-2.5">
-                <div
-                  className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                  style={{ background: signal.active ? '#F2C14E' : 'rgba(247,245,240,0.2)' }}
-                />
-                <span style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: '12px',
-                  color: signal.active ? 'rgba(247,245,240,0.8)' : 'rgba(247,245,240,0.3)',
-                }}>
-                  {signal.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+        )}
 
-        {/* Spacer for CTA */}
         <div className="h-4" />
       </div>
 
@@ -414,13 +407,21 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
             letterSpacing: '0.05em',
           }}
           onClick={() => {
-            window.open(`mailto:rbi@mlb.com?subject=RBI Outreach: ${neighborhood.name}&body=Neighborhood: ${neighborhood.name}%0ANeed Score: ${neighborhood.needScore}/10%0ACity: ${neighborhood.city}%0A%0AThis neighborhood has been identified as a high-priority candidate for RBI program deployment.`, '_blank');
+            window.open(
+              `mailto:rbi@mlb.com?subject=RBI Outreach: ${neighborhood.name} (${neighborhood.zipCodes[0]})` +
+              `&body=Neighborhood: ${neighborhood.name}%0AZIP: ${neighborhood.zipCodes[0]}%0ACity: ${neighborhood.city}%0A` +
+              `RBI Readiness Score: ${neighborhood.needScore}/10%0ASVI: ${neighborhood.sviScore.toFixed(3)}%0A` +
+              `Free Lunch %%: ${(neighborhood.freeLunchPct * 100).toFixed(0)}%%%0A` +
+              `Baseball Fields: ${neighborhood.baseballFieldCount}%0AB%26GC Locations: ${neighborhood.bgcCount}%0A%0A` +
+              `This ZIP has been identified as a high-priority candidate for RBI program deployment.`,
+              '_blank'
+            );
           }}
         >
           FLAG FOR RBI OUTREACH
         </button>
         <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.35)', textAlign: 'center', marginTop: '8px' }}>
-          Opens pre-filled email to RBI affiliate inquiry
+          Opens pre-filled email with ZIP profile data
         </p>
       </div>
     </div>
