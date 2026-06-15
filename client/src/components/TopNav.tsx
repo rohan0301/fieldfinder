@@ -45,11 +45,11 @@ export function TopNav({ viewMode, onViewChange, onSearch, searchQuery }: TopNav
       {/* Brand */}
       <div className="flex items-center gap-3 flex-shrink-0">
         {/* Diamond logo mark */}
-        <div className="w-8 h-8 flex items-center justify-center">
+        <div className="flex items-center justify-center">
           <img
-            src="/manus-storage/firstbase-logo_09b7bbd0.png"
+            src="/logo/fieldfinder1.png"
             alt="FieldFinder logo"
-            style={{ width: '32px', height: '32px', objectFit: 'contain' }}
+            style={{ width: '60px', height: '60px', objectFit: 'contain' }}
           />
         </div>
         <span
