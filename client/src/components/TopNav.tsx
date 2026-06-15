@@ -4,9 +4,16 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
-import { findNeighborhoodMatches, neighborhoods } from '@/lib/data';
+import { findNeighborhoodMatches, neighborhoods, getAllAdjustedNeighborhoods, programs } from '@/lib/data';
 
 type ViewMode = 'rbi' | 'parents';
+
+const adjustedNeighborhoods = getAllAdjustedNeighborhoods(programs);
+const adjustedNeighborhoodMap = new Map(adjustedNeighborhoods.map(n => [n.id, n]));
+
+function getDisplayScore(neighborhood: typeof neighborhoods[0]): number {
+  return adjustedNeighborhoodMap.get(neighborhood.id)?.adjustedNeedScore ?? neighborhood.needScore;
+}
 
 interface TopNavProps {
   viewMode: ViewMode;
@@ -167,7 +174,7 @@ export function TopNav({ viewMode, onViewChange, onSearch, searchQuery }: TopNav
                     {n.name}
                   </div>
                   <div style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(247,245,240,0.5)', fontSize: '11px' }}>
-                    {n.city} · {n.zipCodes.join(', ')} · Need Score {n.needScore.toFixed(1)}/10
+                    {n.city} · {n.zipCodes.join(', ')} · Need Score {getDisplayScore(n).toFixed(1)}/10
                   </div>
                 </div>
                 {n.gapStatus === 'gap' && (

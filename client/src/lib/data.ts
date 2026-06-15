@@ -1,11 +1,13 @@
 // FIELDFINDER — Alameda + San Francisco County Data
-// ORIGINAL RBI Readiness scores (stored in needScore):
+// BASE SCORING (stored in needScore):
 //   Score = (SVI × 0.5) + (BaseballFields/18 × 0.25) + (B&GC/18 × 0.25) × 10
 //
-// NEW ADJUSTED SCORING (use getAdjustedNeighborhood or getAllAdjustedNeighborhoods):
-//   Base Score = (SVI × 0.40) + (BaseballFields/18 × 0.20) + (B&GC/18 × 0.20) × 10
-//   Adjusted Score = Base Score - Org Coverage Reduction (0–3 points)
-//   → Org presence lowers area's need score (better coverage = lower need)
+// ADJUSTED SCORING WITH ORG COVERAGE (use getAdjustedNeighborhood or getAllAdjustedNeighborhoods):
+//   Base Score = (SVI × 0.5) + (BaseballFields/18 × 0.25) + (B&GC/18 × 0.25) × 10  [same as original]
+//   Org Coverage Reduction = sum of nearby program impacts, capped at 1.5 points
+//   Adjusted Score = Base Score - Org Coverage Reduction (0–1.5 points)
+//   → Areas with NO nearby orgs keep full score (high need)
+//   → Areas with good org coverage get modest reduction (still ~4+ if base is 5+)
 //   → RBI/Little League programs have highest impact; Parks & Rec / Nonprofit lower
 //   → Free programs have 100% impact; low-cost 80%; paid 50%
 //   → Distance decay: programs closer to neighborhood center have more impact
@@ -1871,8 +1873,8 @@ export const programs: Program[] = [
 ];
 
 // ── ORGANIZATIONAL COVERAGE SCORING ────────────────────────────
-// NEW FORMULA (with org presence):
-//   Base Score = (SVI × 0.40) + (BaseballFields/18 × 0.20) + (B&GC/18 × 0.20) × 10
+// FORMULA (with org presence):
+//   Base Score = (SVI × 0.50) + (BaseballFields/18 × 0.25) + (B&GC/18 × 0.25) × 10
 //   Adjusted Score = Base Score - Org Coverage Reduction
 //
 // Org Types (from best to least impactful):
@@ -1886,8 +1888,8 @@ export const programs: Program[] = [
 //   - Low-cost: 0.8 (80% reduction impact)
 //   - Paid: 0.5 (50% reduction impact)
 //
-// Distance Decay: Programs closer to neighborhood have more impact.
-// Cap: Total org reduction capped at 3 points out of 10.
+// Distance Decay: Programs closer to neighborhood have more impact (0.5 to 1.0 multiplier).
+// Cap: Total org reduction capped at 1.5 points max. Areas with no orgs keep full score.
 
 export interface OrgCoverage {
   programId: string;
@@ -1973,7 +1975,8 @@ export function findNearbyPrograms(
 
 /**
  * Calculate total org coverage reduction for a neighborhood.
- * Capped at 3.0 points max to preserve meaningful score differentiation.
+ * Capped at 1.5 points max to preserve meaningful score differentiation.
+ * Areas with no nearby orgs keep their full base score.
  */
 export function calculateOrgCoverageReduction(
   neighborhood: Neighborhood,
@@ -1981,12 +1984,13 @@ export function calculateOrgCoverageReduction(
 ): number {
   const coverages = findNearbyPrograms(neighborhood, programs);
   const totalImpact = coverages.reduce((sum, cov) => sum + cov.coverageImpact, 0);
-  return Math.min(3.0, totalImpact);
+  return Math.min(1.5, totalImpact);
 }
 
 /**
  * Calculate adjusted need score with org coverage factored in.
- * New weights: SVI 40%, Fields 20%, B&GC 20%, leaves room for org component impact.
+ * Uses original weights (SVI 50%, Fields 25%, B&GC 25%) for base score,
+ * then subtracts org coverage reduction (0–1.5 points).
  */
 export function calculateAdjustedNeedScore(
   sviScore: number,
@@ -1994,9 +1998,9 @@ export function calculateAdjustedNeedScore(
   bgcCount: number,
   orgCoverageReduction: number
 ): number {
-  const sviComponent = sviScore * 0.4;
-  const fieldComponent = (baseballFieldCount / 18) * 0.2;
-  const bgcComponent = (bgcCount / 18) * 0.2;
+  const sviComponent = sviScore * 0.5;
+  const fieldComponent = (baseballFieldCount / 18) * 0.25;
+  const bgcComponent = (bgcCount / 18) * 0.25;
 
   const baseScore = (sviComponent + fieldComponent + bgcComponent) * 10;
   const adjustedScore = baseScore - orgCoverageReduction;
