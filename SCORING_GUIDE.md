@@ -1,123 +1,218 @@
-# FieldFinder: Updated Scoring System with Organizational Coverage
+# Scoring Guide: How Neighborhoods Are Ranked
 
 ## Overview
 
-The scoring system now factors in **organizational presence** to adjust neighborhood need scores. Areas with better program coverage see their need scores reduced, reflecting the reality that existing programs already serve those communities.
+Each neighborhood gets a **need score** from 0–10 based on:
+1. **Social vulnerability** (economic distress, lack of resources)
+2. **Baseball infrastructure** (fields and facilities)
+3. **Organizational presence** (nearby RBI, Little League, and other programs)
+
+**Higher score = higher need** for new baseball program support.
 
 ---
 
-## Scoring Formula
+## The Formula
 
-### Base Components (40% each of original 100%)
+### Base Score (Social Vulnerability + Infrastructure)
+
 ```
-Base Score = (SVI × 0.40) + (BaseballFields/18 × 0.20) + (B&GC/18 × 0.20) × 10
+Base Score = (SVI × 0.50) + (Fields/18 × 0.25) + (B&GC/18 × 0.25) × 10
 ```
 
-| Component | Weight | Description |
-|-----------|--------|-------------|
-| **SVI (Social Vulnerability Index)** | 40% | CDC metric (0–1); higher = more vulnerable |
-| **Baseball Fields** | 20% | Count of confirmed fields, normalized to 18 |
-| **Boys & Girls Clubs** | 20% | Count of B&GC locations, normalized to 18 |
+**Components:**
+| Component | Weight | What It Measures |
+|-----------|--------|------------------|
+| **SVI (Social Vulnerability Index)** | 50% | CDC metric of economic/social distress (0–1 scale) |
+| **Baseball Fields** | 25% | Count of confirmed fields; normalized to 18 |
+| **Boys & Girls Clubs** | 25% | Count of B&GC locations; normalized to 18 |
 
-### Org Coverage Reduction (Applied After Base Score)
+**Result**: Base scores typically range from **3–7 out of 10**.
+
+### Adjusted Score (Base Score Minus Program Coverage)
+
 ```
-Adjusted Score = Base Score - Org Coverage Reduction
-Minimum: 0, Maximum: Base Score
-Org Coverage Reduction: 0–3 points (capped)
+Adjusted Score = Base Score − Org Coverage Reduction
 ```
+
+Where **Org Coverage Reduction** is based on nearby programs:
+- **0 points** if no programs nearby
+- **Up to 1.5 points** if programs exist within 5 miles
+- Factors in program type, cost, and distance
+
+**Result**: Final scores still range **0–10**, but areas with good program coverage score lower (less need).
 
 ---
 
-## Organization Type Weights
+## Organization Weights
 
 Programs are weighted by type. **Better programs = higher reduction** (lower final need score).
 
-| Org Type | Weight | Rationale |
-|----------|--------|-----------|
-| **RBI** | 2.0 | Comprehensive, free, best for underserved youth |
-| **Little League** | 1.5 | Established, structured, high credibility |
+| Org Type | Weight | Why |
+|----------|--------|-----|
+| **RBI** | 2.0 | Comprehensive, free, focuses on underserved youth |
+| **Little League** | 1.5 | Established, structured, widely trusted |
 | **Parks & Rec** | 0.8 | Often limited focus on baseball specifically |
-| **Nonprofit** | 0.6 | Varies widely; moderate baseline |
+| **Nonprofit** | 0.6 | Variable quality and focus |
 
 ---
 
 ## Cost Multipliers
 
-Program cost affects the magnitude of the reduction.
+Free programs have more impact than paid programs (they serve more youth).
 
-| Cost | Multiplier | Impact |
-|------|-----------|--------|
-| **Free** | 1.0 | Full reduction impact |
-| **Low-cost** | 0.8 | 80% of full impact |
-| **Paid** | 0.5 | 50% of full impact |
+| Cost | Multiplier |
+|------|-----------|
+| **Free** | 1.0 |
+| **Low-cost** | 0.8 |
+| **Paid** | 0.5 |
 
 ---
 
 ## Distance Decay
 
-Programs closer to a neighborhood center have greater impact on reducing its need score.
+Programs closer to a neighborhood have more impact. Impact decreases with distance.
 
 ```
-Distance Factor = max(0.5, 1 - (distance / maxDistance))
+Distance Factor = max(0.5, 1 − (distance / 5 miles))
 ```
 
-- **Default max distance**: 5 miles
-- **At 0 miles** (neighborhood center): factor = 1.0 (100% impact)
-- **At 2.5 miles** (halfway): factor = 0.75 (75% impact)
-- **At 5 miles** (boundary): factor = 0.5 (50% impact)
+- **0 miles** (neighborhood center): 100% impact
+- **2.5 miles**: 75% impact
+- **5 miles**: 50% impact
 - **Beyond 5 miles**: program not considered
 
-### Example Calculation
-
-For a neighborhood with no existing programs:
+**Example**: An RBI program 2 miles away:
 ```
-Neighborhood: Hegenberger/Coliseum (94621)
-Base Score: 6.70
-Org Coverage Reduction: 0
-Adjusted Score: 6.70 (unchanged)
-```
-
-For a neighborhood served by RBI + Little League:
-```
-Neighborhood: Downtown Hayward (94541)
-Base Score: 3.30
-
-Nearby Programs (within 5 miles):
-  1. RBI program, free, 1.2 miles away
-     Impact = 2.0 × 1.0 × 0.76 = 1.52
-
-  2. Little League, low-cost, 2.8 miles away
-     Impact = 1.5 × 0.8 × 0.44 = 0.53
-
-Total Org Coverage Reduction: min(1.52 + 0.53, 3.0) = 2.05
-
-Adjusted Score: 3.30 - 2.05 = 1.25
+Impact = OrgType(2.0) × Cost(1.0) × Distance(0.6) = 1.2 points
 ```
 
 ---
 
-## Usage in Code
+## Example Calculations
 
-### Option 1: Get a Single Adjusted Neighborhood
+### Example 1: High-Need Neighborhood (No Programs)
 
-```typescript
-import { neighborhoods, programs, getAdjustedNeighborhood } from '@/lib/data';
+```
+Neighborhood: Hegenberger/Coliseum
+- SVI: 0.67
+- Fields: 12
+- B&GC: 0
 
-// Get one neighborhood with adjusted scores
-const hood = neighborhoods.find(n => n.id === 'hegenberger-coliseum');
-const adjusted = getAdjustedNeighborhood(hood, programs);
+Base Score = (0.67 × 0.50) + (12/18 × 0.25) + (0/18 × 0.25) × 10
+           = (0.335) + (0.167) + (0) × 10
+           = 5.02 × 10 = 5.02
 
-console.log(`Original need score: ${adjusted.needScore}`);
-console.log(`Adjusted need score: ${adjusted.adjustedNeedScore}`);
-console.log(`Org coverage reduction: ${adjusted.orgCoverageReduction}`);
-console.log(`Nearby programs:`);
-adjusted.nearbyPrograms.forEach(p => {
-  console.log(`  - ${p.programName} (${p.orgType}, ${p.distanceMiles}mi away)`);
-  console.log(`    Impact: ${p.coverageImpact.toFixed(3)}`);
-});
+Nearby Programs: None
+Org Coverage Reduction: 0
+
+Adjusted Score: 5.02 / 10  ← No programs, full need
 ```
 
-### Option 2: Get All Adjusted Neighborhoods (Sorted by Adjusted Need)
+### Example 2: Lower-Need Neighborhood (Strong Program Coverage)
+
+```
+Neighborhood: Oakland (Downtown area)
+- SVI: 0.52
+- Fields: 8
+- B&GC: 2
+
+Base Score = (0.52 × 0.50) + (8/18 × 0.25) + (2/18 × 0.25) × 10
+           = (0.26) + (0.111) + (0.028) × 10
+           = 3.99 / 10
+
+Nearby Programs (within 5 miles):
+  1. RBI program, free, 1.2 miles away
+     Impact = 2.0 × 1.0 × max(0.5, 1 - 1.2/5) = 2.0 × 1.0 × 0.76 = 1.52
+  
+  2. Little League, low-cost, 3.5 miles away
+     Impact = 1.5 × 0.8 × max(0.5, 1 - 3.5/5) = 1.5 × 0.8 × 0.30 = 0.36
+
+Total Org Coverage Reduction = min(1.52 + 0.36, 1.5) = 1.50 (capped)
+
+Adjusted Score: 3.99 − 1.50 = 2.49 / 10  ← Programs nearby, reduced need
+```
+
+---
+
+## Key Insights
+
+### Areas with NO Programs Keep Full Base Score
+If a neighborhood has no nearby programs, `Org Coverage Reduction = 0`, so the adjusted score equals the base score. This highlights true unmet need.
+
+**Example**: A neighborhood with low SVI (wealthy, stable) but no programs scores low. This is correct—there's less *need*, not more infrastructure.
+
+### Org Reduction is Capped at 1.5
+Even with multiple strong programs nearby, a neighborhood's score can't drop more than 1.5 points. This ensures meaningful differentiation for deployment decisions.
+
+**Example**: A vulnerable area (SVI 0.8) with strong programs still scores ~6+ out of 10, signaling it could use additional resources.
+
+---
+
+## How Scoring Is Used in FieldFinder
+
+### Map View
+- **Choropleth colors**: Darker = higher need (orange/red for scores 6+, yellow/green for scores 3-5)
+- Each neighborhood is shaded based on its adjusted need score
+
+### Sidebar Ranking
+- **Priority List**: Neighborhoods sorted by adjusted need score (highest first)
+- **NeighborhoodProfile**: Shows the final adjusted score + breakdown of components
+
+### Search
+- When you search for a neighborhood, the result shows its adjusted need score
+
+---
+
+## Customizing Scores
+
+### Modify Organization Weights
+
+Edit `client/src/lib/data.ts` in the `findNearbyPrograms()` function:
+
+```typescript
+const orgTypeWeights: Record<Program['orgType'], number> = {
+  rbi: 2.0,           // ← Increase to weight RBI more heavily
+  'little-league': 1.5,
+  'parks-rec': 0.8,
+  nonprofit: 0.6,
+};
+```
+
+Then restart: `npm run dev`
+
+### Modify Cost Multipliers
+
+In the same function:
+
+```typescript
+const costMultipliers: Record<Program['cost'], number> = {
+  free: 1.0,
+  'low-cost': 0.8,    // ← Adjust if low-cost should count more
+  paid: 0.5,
+};
+```
+
+### Change the Search Radius
+
+Change the `5` in `findNearbyPrograms()` calls:
+
+```typescript
+findNearbyPrograms(neighborhood, programs, 5)  // ← Change 5 to your preferred miles
+```
+
+### Adjust the Org Reduction Cap
+
+In `calculateOrgCoverageReduction()`:
+
+```typescript
+Math.min(1.5, totalImpact)  // ← Change 1.5 to your preferred cap
+```
+
+---
+
+## Using Scores in Code
+
+### Get Adjusted Scores for All Neighborhoods
 
 ```typescript
 import { programs, getAllAdjustedNeighborhoods } from '@/lib/data';
@@ -125,233 +220,73 @@ import { programs, getAllAdjustedNeighborhoods } from '@/lib/data';
 const adjusted = getAllAdjustedNeighborhoods(programs)
   .sort((a, b) => b.adjustedNeedScore - a.adjustedNeedScore);
 
-// Top 5 highest-need neighborhoods (accounting for existing programs)
-adjusted.slice(0, 5).forEach(hood => {
-  console.log(`${hood.name}: ${hood.adjustedNeedScore.toFixed(2)}`);
+adjusted.forEach(hood => {
+  console.log(`${hood.name}: ${hood.adjustedNeedScore.toFixed(1)}/10`);
 });
 ```
 
-### Option 3: Calculate Coverage for a Specific Neighborhood
+### Get a Single Neighborhood with Program Details
 
 ```typescript
-import { neighborhoods, programs, findNearbyPrograms } from '@/lib/data';
+import { neighborhoods, programs, getAdjustedNeighborhood } from '@/lib/data';
 
-const hood = neighborhoods[0];
-const coverages = findNearbyPrograms(hood, programs, 5); // 5-mile radius
+const hood = neighborhoods.find(n => n.id === 'hegenberger-coliseum');
+const adjusted = getAdjustedNeighborhood(hood, programs);
 
-coverages.forEach(cov => {
-  console.log(`${cov.programName}`);
-  console.log(`  Type: ${cov.orgType}`);
-  console.log(`  Cost: ${cov.cost}`);
-  console.log(`  Distance: ${cov.distanceMiles} miles`);
-  console.log(`  Impact: ${cov.coverageImpact.toFixed(3)} points`);
+console.log(`Name: ${adjusted.name}`);
+console.log(`Need Score: ${adjusted.adjustedNeedScore.toFixed(1)}/10`);
+console.log(`Nearby Programs: ${adjusted.nearbyPrograms.length}`);
+
+adjusted.nearbyPrograms.forEach(p => {
+  console.log(`  - ${p.programName} (${p.distanceMiles.toFixed(1)} mi)`);
 });
 ```
 
----
-
-## Running the Project
-
-### Prerequisites
-
-Ensure you have Node.js 16+ installed. Check:
-```bash
-node --version  # Should be v16.0.0 or higher
-npm --version   # Should be 7.0.0 or higher
-```
-
-### Installation & Development
-
-1. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-
-2. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
-   
-   This starts:
-   - **Frontend** (Vite): `http://localhost:5173`
-   - **Backend** (Node): `http://localhost:3000`
-   
-   The dev server watches for file changes and hot-reloads automatically.
-
-3. **Open in browser**:
-   ```
-   http://localhost:5173
-   ```
-
-### Build for Production
-
-```bash
-npm run build
-```
-
-This creates optimized bundles in:
-- `client/dist/` — frontend assets
-- `server/` — backend (runs as-is)
-
-### Environment Variables
-
-If needed, create `.env` files:
-
-**`.env.local`** (root):
-```
-VITE_API_URL=http://localhost:3000
-```
-
-**`.env`** (server, if applicable):
-```
-PORT=3000
-NODE_ENV=development
-```
-
----
-
-## Integration Points
-
-### If You're Using Neighborhoods in UI Components
-
-Update any component that displays neighborhoods to use adjusted scores:
-
-**Before:**
-```tsx
-<p>Need Score: {neighborhood.needScore.toFixed(2)}</p>
-```
-
-**After:**
-```tsx
-import { getAdjustedNeighborhood } from '@/lib/data';
-
-const adjusted = getAdjustedNeighborhood(neighborhood, programs);
-<p>Need Score: {adjusted.adjustedNeedScore.toFixed(2)}</p>
-<p>Org Coverage Reduction: -{adjusted.orgCoverageReduction.toFixed(2)}</p>
-{adjusted.nearbyPrograms.length > 0 && (
-  <details>
-    <summary>Nearby Programs ({adjusted.nearbyPrograms.length})</summary>
-    <ul>
-      {adjusted.nearbyPrograms.map(prog => (
-        <li key={prog.programId}>{prog.programName} ({prog.orgType})</li>
-      ))}
-    </ul>
-  </details>
-)}
-```
-
-### For Sorting & Ranking
-
-```tsx
-// OLD: Sort by original score
-const sorted = neighborhoods.sort((a, b) => b.needScore - a.needScore);
-
-// NEW: Sort by adjusted score
-import { getAllAdjustedNeighborhoods } from '@/lib/data';
-
-const adjusted = getAllAdjustedNeighborhoods(programs);
-const sorted = adjusted.sort((a, b) => b.adjustedNeedScore - a.adjustedNeedScore);
-```
-
----
-
-## Testing the New Scoring
-
-### Quick Test Script
-
-Create `test-scoring.mjs` in the root:
-
-```javascript
-import { neighborhoods, programs, getAllAdjustedNeighborhoods } from './client/src/lib/data.ts';
-
-console.log('=== Scoring Comparison ===\n');
-
-const adjusted = getAllAdjustedNeighborhoods(programs);
-
-// Show impact on top-5 neighborhoods
-adjusted.slice(0, 5).forEach((hood, i) => {
-  const reduction = hood.needScore - hood.adjustedNeedScore;
-  console.log(`${i + 1}. ${hood.name}`);
-  console.log(`   Original:  ${hood.needScore.toFixed(2)}`);
-  console.log(`   Adjusted:  ${hood.adjustedNeedScore.toFixed(2)}`);
-  console.log(`   Reduction: ${reduction.toFixed(2)} (${hood.nearbyPrograms.length} programs)`);
-  console.log('');
-});
-
-console.log('=== Programs Breakdown ===\n');
-
-programs.forEach(prog => {
-  console.log(`${prog.name}`);
-  console.log(`  Type: ${prog.orgType}, Cost: ${prog.cost}`);
-  console.log(`  Location: ${prog.city}`);
-  console.log('');
-});
-```
-
-Run it:
-```bash
-node test-scoring.mjs
-```
-
----
-
-## Key Behavior Changes
-
-| Scenario | Old Behavior | New Behavior |
-|----------|--------------|--------------|
-| Area with no programs | Score = base | Score = base (unchanged) |
-| Area with 1 nearby RBI | Score = base | Score = base - ~1.5 |
-| Area with 2 Little Leagues | Score = base | Score = base - ~2.0 |
-| Area with RBI + LL + Parks & Rec | Score = base | Score = base - ~2.8 to 3.0 (capped) |
-
----
-
-## Modifying Weights
-
-To adjust the weighting, edit the `findNearbyPrograms()` function in `data.ts`:
+### Find Programs Near a Neighborhood
 
 ```typescript
-const orgTypeWeights: Record<Program['orgType'], number> = {
-  rbi: 2.0,           // ← Increase to make RBI programs more impactful
-  'little-league': 1.5,
-  'parks-rec': 0.8,   // ← Increase if Parks & Rec should count more
-  nonprofit: 0.6,
-};
+import { findNearbyPrograms } from '@/lib/data';
 
-const costMultipliers: Record<Program['cost'], number> = {
-  free: 1.0,
-  'low-cost': 0.8,    // ← Increase if low-cost should be weighted closer to free
-  paid: 0.5,
-};
-```
+const progs = findNearbyPrograms(neighborhood, programs, 5);
 
-Then restart the dev server:
-```bash
-npm run dev
+progs.forEach(p => {
+  console.log(`${p.programName}`);
+  console.log(`  Type: ${p.orgType}, Cost: ${p.cost}`);
+  console.log(`  Distance: ${p.distanceMiles.toFixed(1)} miles`);
+  console.log(`  Impact on Score: −${p.coverageImpact.toFixed(2)} points`);
+});
 ```
 
 ---
 
 ## FAQ
 
-**Q: Why is the org coverage capped at 3 points?**
-A: To ensure neighborhoods with very high need (high SVI, low infrastructure) never score below ~3–4 even with heavy program coverage. This preserves meaningful differentiation for deployment prioritization.
+**Q: Why base scores on SVI, fields, and B&GC?**  
+A: SVI captures economic need. Fields and B&GCs are measurable proxies for baseball infrastructure and youth programs. Together, they reflect real barriers to access.
 
-**Q: What if a program is listed but not confirmed active?**
-A: Use the `Program.status` field. Update `findNearbyPrograms()` to filter: `.filter(p => p.status === 'confirmed-active')` if desired.
+**Q: Why cap org reduction at 1.5 points?**  
+A: Neighborhoods with high need (high SVI, low infrastructure) should never score below ~3–4 even with strong program coverage. This preserves meaningful ranking for deployment decisions.
 
-**Q: How do I add a new program?**
-A: Add it to the `programs` array in `data.ts`. The adjusted scores will automatically include it on the next calculation.
+**Q: How often are scores updated?**  
+A: Scores update when you restart the dev server (they're calculated from data.ts at runtime). To sync with external databases, modify `data.ts` to fetch from an API.
 
-**Q: Can I customize the search radius per neighborhood?**
-A: Yes. Modify `findNearbyPrograms(neighborhood, programs, 5)` — change the `5` parameter to your desired miles.
+**Q: Can I add new programs?**  
+A: Yes! Add them to the `programs` array in `client/src/lib/data.ts`. Scores update automatically on the next calculation.
+
+**Q: Can neighborhoods have negative scores?**  
+A: No. The formula ensures scores stay in 0–10 range even with heavy program coverage.
 
 ---
 
-## Files Changed
+## Files
 
-- **`client/src/lib/data.ts`**: Added new interfaces (`OrgCoverage`, `AdjustedNeighborhood`) and functions (`findNearbyPrograms`, `calculateOrgCoverageReduction`, `calculateAdjustedNeedScore`, `getAdjustedNeighborhood`, `getAllAdjustedNeighborhoods`).
-- **Header comment**: Updated to describe new formula.
+- **`client/src/lib/data.ts`**: Contains scoring functions and all neighborhood + program data
+- **`client/src/components/MapView.tsx`**: Uses adjusted scores for map coloring
+- **`client/src/components/NeighborhoodSidebar.tsx`**: Displays adjusted scores in sidebar
+- **`client/src/components/TopNav.tsx`**: Shows adjusted scores in search results
 
-**No breaking changes**. The original `neighborhoods` array and `needScore` fields remain unchanged for backward compatibility.
+---
 
+## Questions?
+
+See [QUICK_START.md](./QUICK_START.md) for setup instructions.

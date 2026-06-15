@@ -425,7 +425,7 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
             window.open(
               `mailto:rbi@mlb.com?subject=RBI Outreach: ${neighborhood.name} (${neighborhood.zipCodes[0]})` +
               `&body=Neighborhood: ${neighborhood.name}%0AZIP: ${neighborhood.zipCodes[0]}%0ACity: ${neighborhood.city}%0A` +
-              `RBI Readiness Score: ${neighborhood.needScore}/10%0ASVI: ${neighborhood.sviScore.toFixed(3)}%0A` +
+              `RBI Readiness Score: ${displayScore.toFixed(1)}/10%0ASVI: ${neighborhood.sviScore.toFixed(3)}%0A` +
               `Free Lunch %%: ${(neighborhood.freeLunchPct * 100).toFixed(0)}%%%0A` +
               `Baseball Fields: ${neighborhood.baseballFieldCount}%0AB%26GC Locations: ${neighborhood.bgcCount}%0A%0A` +
               `This ZIP has been identified as a high-priority candidate for RBI program deployment.`,

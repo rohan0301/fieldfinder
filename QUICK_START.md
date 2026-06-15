@@ -1,19 +1,61 @@
-# Quick Start: New Scoring System
+# Quick Start: Installation & Setup
 
-## What Changed
+## Prerequisites
 
-The neighborhood scoring now factors in **organizational presence** to reduce need scores. Areas with good program coverage have lower "need" because they're already served.
+- **Node.js** 16+ ([download here](https://nodejs.org))
+- **npm** 7+ (comes with Node.js)
+- **Google Maps API Key** (free tier available)
 
+Check your versions:
+```bash
+node --version
+npm --version
 ```
-OLD: Score = (SVI × 0.5) + (Fields/18 × 0.25) + (B&GC/18 × 0.25) × 10
 
-NEW: Score = [(SVI × 0.4) + (Fields/18 × 0.2) + (B&GC/18 × 0.2) × 10] - Org Reduction
-   └─ Org Reduction is 0–3 points based on nearby program quality/cost/distance
+---
+
+## 1. Install Dependencies
+
+```bash
+npm install
 ```
 
-## Run the Project
+This installs both frontend (React/Vite) and backend (Express) dependencies.
 
-### 1. Start Development Server
+---
+
+## 2. Get a Google Maps API Key
+
+### Quick Setup
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+2. Sign in with your Google account
+3. Create a new project or select an existing one
+4. Click **+ CREATE CREDENTIALS → API Key**
+5. Copy your API key
+6. Create a file named `.env.local` in the project root:
+   ```
+   VITE_GOOGLE_MAPS_API_KEY=your_api_key_here
+   ```
+7. Save
+
+### Restrict Your Key (Recommended)
+
+To prevent unauthorized use:
+1. Click the API key you just created in the Google Cloud Console
+2. Under **Application restrictions**, select **HTTP referrers (web sites)**
+3. Add your local domains:
+   ```
+   localhost:5173
+   localhost:3000
+   ```
+4. Under **API restrictions**, select **Maps JavaScript API** only
+5. Click **SAVE**
+
+---
+
+## 3. Run the Development Server
+
 ```bash
 npm run dev
 ```
@@ -22,134 +64,29 @@ Opens:
 - **Frontend**: http://localhost:5173
 - **Backend**: http://localhost:3000
 
-### 2. Build for Production
+---
+
+## 4. Build for Production
+
 ```bash
 npm run build
+npm start
 ```
-
-### 3. Verify Code Compiles
-```bash
-npm run check
-```
-
-## Use in Your Code
-
-### Get adjusted scores for all neighborhoods:
-```typescript
-import { programs, getAllAdjustedNeighborhoods } from '@/lib/data';
-
-const adjusted = getAllAdjustedNeighborhoods(programs)
-  .sort((a, b) => b.adjustedNeedScore - a.adjustedNeedScore);
-
-adjusted.forEach(hood => {
-  console.log(`${hood.name}: ${hood.adjustedNeedScore.toFixed(2)}`);
-  console.log(`  Org Coverage Reduction: ${hood.orgCoverageReduction.toFixed(2)}`);
-  console.log(`  Nearby Programs: ${hood.nearbyPrograms.length}`);
-});
-```
-
-### Get a single adjusted neighborhood:
-```typescript
-import { getAdjustedNeighborhood } from '@/lib/data';
-
-const hood = neighborhoods.find(n => n.id === 'hegenberger-coliseum');
-const adjusted = getAdjustedNeighborhood(hood, programs);
-
-console.log(adjusted.adjustedNeedScore);        // e.g., 6.70
-console.log(adjusted.orgCoverageReduction);     // e.g., 0.00 (no nearby programs)
-console.log(adjusted.nearbyPrograms);           // e.g., []
-```
-
-### See programs near a neighborhood:
-```typescript
-import { findNearbyPrograms } from '@/lib/data';
-
-const programs = findNearbyPrograms(neighborhood, allPrograms, 5); // 5 miles
-
-programs.forEach(prog => {
-  console.log(`${prog.programName}`);
-  console.log(`  Type: ${prog.orgType}`);       // rbi | little-league | parks-rec | nonprofit
-  console.log(`  Cost: ${prog.cost}`);          // free | low-cost | paid
-  console.log(`  Distance: ${prog.distanceMiles} miles`);
-  console.log(`  Impact: ${prog.coverageImpact.toFixed(3)} points`);
-});
-```
-
-## Organization Weights
-
-| Type | Weight | Reason |
-|------|--------|--------|
-| **RBI** | 2.0 | Best: comprehensive, free, underserved focus |
-| **Little League** | 1.5 | Traditional, established |
-| **Parks & Rec** | 0.8 | Partial focus on baseball |
-| **Nonprofit** | 0.6 | Variable quality |
-
-**Cost Multipliers**: Free (1.0) > Low-cost (0.8) > Paid (0.5)
-
-## Key Functions (in `client/src/lib/data.ts`)
-
-```typescript
-// Get one neighborhood with adjusted scores + nearby programs
-getAdjustedNeighborhood(neighborhood, programs)
-
-// Get all neighborhoods sorted by adjusted need
-getAllAdjustedNeighborhoods(programs)
-
-// Find programs within radius of a neighborhood
-findNearbyPrograms(neighborhood, programs, maxDistanceMiles?)
-
-// Calculate org coverage reduction manually
-calculateOrgCoverageReduction(neighborhood, programs)
-
-// Calculate adjusted score manually
-calculateAdjustedNeedScore(svi, fields, bgc, orgReduction)
-```
-
-## Full Documentation
-
-See **[SCORING_GUIDE.md](./SCORING_GUIDE.md)** for:
-- Detailed formula explanation
-- Distance decay algorithm
-- Example calculations
-- Component integration examples
-- Weight customization
-
-## Testing
-
-To see the scoring in action:
-
-1. **In DevTools Console** (browser):
-```javascript
-import { programs, getAllAdjustedNeighborhoods } from '/src/lib/data.ts';
-const adj = getAllAdjustedNeighborhoods(programs);
-console.table(adj.slice(0, 5).map(n => ({
-  name: n.name,
-  original: n.needScore.toFixed(2),
-  adjusted: n.adjustedNeedScore.toFixed(2),
-  reduction: n.orgCoverageReduction.toFixed(2)
-})));
-```
-
-2. **Or update a UI component** to display both scores:
-```tsx
-<div>
-  <p>Original Score: {neighborhood.needScore.toFixed(2)}</p>
-  <p>With Org Coverage: {adjusted.adjustedNeedScore.toFixed(2)}</p>
-  <details>
-    <summary>Programs ({adjusted.nearbyPrograms.length})</summary>
-    <ul>
-      {adjusted.nearbyPrograms.map(p => (
-        <li key={p.programId}>{p.programName} ({p.orgType})</li>
-      ))}
-    </ul>
-  </details>
-</div>
-```
-
-## Backwards Compatibility
-
-✅ **No breaking changes**. The original `neighborhoods` array and `needScore` fields are unchanged. New functions work alongside existing code.
 
 ---
 
-**Questions?** See `SCORING_GUIDE.md` for FAQ, detailed calculations, and advanced usage.
+## Troubleshooting
+
+### Map Not Loading
+
+Check that `.env.local` exists in the project root with `VITE_GOOGLE_MAPS_API_KEY` set. Verify the key is valid in [Google Cloud Console](https://console.cloud.google.com/apis/credentials). Make sure **Maps JavaScript API** is enabled for your project. Hard refresh the browser (Ctrl+Shift+R on Windows, Cmd+Shift+R on Mac).
+
+### API Key Not Being Picked Up
+
+File must be named `.env.local` (not `.env` or `.env.example`). Must be in project root (same folder as `package.json`). Restart the dev server after creating or changing `.env.local`. Hard refresh the browser.
+
+---
+
+## Next Steps
+
+For information about how neighborhoods are scored, see [SCORING_GUIDE.md](./SCORING_GUIDE.md).
