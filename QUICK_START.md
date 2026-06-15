@@ -87,6 +87,6 @@ File must be named `.env.local` (not `.env` or `.env.example`). Must be in proje
 
 ---
 
-## Next Steps
+## Additional Information
 
 For information about how neighborhoods are scored, see [SCORING_GUIDE.md](./SCORING_GUIDE.md).
