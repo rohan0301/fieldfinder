@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { MapView as GoogleMapView } from './Map';
 import type { Neighborhood, Program } from '@/lib/data';
-import { neighborhoods, programs } from '@/lib/data';
+import { neighborhoods, programs, getAllAdjustedNeighborhoods } from '@/lib/data';
 import { getPrimaryNeighborhoodId, getZipsForNeighborhoodId } from '@/lib/zipNeighborhoodMap';
 import { usePersistFn } from '@/hooks/usePersistFn';
 
@@ -40,8 +40,11 @@ const CHORO_COLORS = [
   '#EF4444',
 ] as const;
 
-const scoreValues = neighborhoods
-  .map(n => n.needScore)
+const adjustedNeighborhoods = getAllAdjustedNeighborhoods(programs);
+const adjustedNeighborhoodMap = new Map(adjustedNeighborhoods.map(n => [n.id, n]));
+
+const scoreValues = adjustedNeighborhoods
+  .map(n => n.adjustedNeedScore)
   .filter(score => Number.isFinite(score))
   .sort((a, b) => a - b);
 
@@ -265,7 +268,9 @@ export function MapViewComponent({
 
       const primaryId = getPrimaryNeighborhoodId(zip);
       const nhood = primaryId ? neighborhoods.find(n => n.id === primaryId) : null;
-      const base = nhood ? getChoroStyle(nhood.needScore).fillOpacity : UNMAPPED_STYLE.fillOpacity;
+      const adjusted = nhood ? adjustedNeighborhoodMap.get(nhood.id) : null;
+      const displayScore = adjusted?.adjustedNeedScore ?? nhood?.needScore ?? 0;
+      const base = nhood ? getChoroStyle(displayScore).fillOpacity : UNMAPPED_STYLE.fillOpacity;
 
       map.data.overrideStyle(e.feature, {
         strokeWeight: 2.5,
@@ -279,7 +284,7 @@ export function MapViewComponent({
           `color:#F2C14E;background:#0D2B1E;padding:4px 10px;border-radius:4px;` +
           `letter-spacing:0.04em;white-space:nowrap;">` +
           `${nhood.name}` +
-          `<span style="font-weight:400;color:rgba(247,245,240,0.6);margin-left:8px;">${nhood.needScore.toFixed(1)}</span>` +
+          `<span style="font-weight:400;color:rgba(247,245,240,0.6);margin-left:8px;">${displayScore.toFixed(1)}</span>` +
           `</div>`
         );
         hoverInfoRef.current.setPosition(e.latLng);
@@ -356,8 +361,10 @@ export function MapViewComponent({
       const zip = (feature.getProperty('ZIP_CODE') as string) ?? '';
       const primaryId = getPrimaryNeighborhoodId(zip);
       const nhood = primaryId ? neighborhoods.find(n => n.id === primaryId) : null;
+      const adjusted = nhood ? adjustedNeighborhoodMap.get(nhood.id) : null;
+      const displayScore = adjusted?.adjustedNeedScore ?? nhood?.needScore ?? 0;
       const isSelected = selectedZips.includes(zip);
-      const c = nhood ? getChoroStyle(nhood.needScore) : UNMAPPED_STYLE;
+      const c = nhood ? getChoroStyle(displayScore) : UNMAPPED_STYLE;
 
       return {
         fillColor:    isSelected ? '#FFD166' : c.fill,

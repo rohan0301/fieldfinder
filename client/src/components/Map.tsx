@@ -106,6 +106,18 @@ function loadMapScript(): Promise<void> {
   // Deduplicate concurrent calls
   if (mapScriptPromise) return mapScriptPromise;
 
+  // Check if API key is configured
+  if (!GOOGLE_MAPS_API_KEY && !FORGE_API_KEY) {
+    const error = new Error(
+      "Google Maps API key is not configured. " +
+      "Please set VITE_GOOGLE_MAPS_API_KEY in your .env.local file. " +
+      "See README.md for instructions."
+    );
+    console.error(error.message);
+    mapScriptPromise = null;
+    return Promise.reject(error);
+  }
+
   mapScriptPromise = new Promise<void>((resolve, reject) => {
     const script = document.createElement("script");
     script.src = MAPS_SCRIPT_URL;
@@ -117,7 +129,10 @@ function loadMapScript(): Promise<void> {
     script.onerror = (e) => {
       console.error("Failed to load Google Maps script", e);
       mapScriptPromise = null;
-      reject(new Error("Failed to load Google Maps"));
+      const apiKeyHint = GOOGLE_MAPS_API_KEY
+        ? "Check API key validity in Google Cloud Console"
+        : "Set VITE_GOOGLE_MAPS_API_KEY in .env.local (see README.md)";
+      reject(new Error(`Failed to load Google Maps. ${apiKeyHint}`));
     };
     document.head.appendChild(script);
   });

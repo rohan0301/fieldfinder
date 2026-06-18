@@ -4,14 +4,20 @@
 
 import { X, AlertTriangle, CheckCircle, Building2, MapPin, Activity, TrendingUp, FileText } from 'lucide-react';
 import type { Neighborhood } from '@/lib/data';
-import { getConditionLabel } from '@/lib/data';
-import { sortedNeighborhoods } from '@/lib/data';
+import { getConditionLabel, sortedNeighborhoods, getAllAdjustedNeighborhoods, programs } from '@/lib/data';
 
 interface NeighborhoodSidebarProps {
   neighborhood: Neighborhood | null;
   onClose: () => void;
   onSelectNeighborhood: (n: Neighborhood) => void;
   isOpen: boolean;
+}
+
+const adjustedNeighborhoods = getAllAdjustedNeighborhoods(programs);
+const adjustedNeighborhoodMap = new Map(adjustedNeighborhoods.map(n => [n.id, n]));
+
+function getDisplayScore(neighborhood: Neighborhood): number {
+  return adjustedNeighborhoodMap.get(neighborhood.id)?.adjustedNeedScore ?? neighborhood.needScore;
 }
 
 function PriorityList({ onSelectNeighborhood, selectedId }: {
@@ -79,10 +85,10 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
             {/* Score bar + value */}
             <div className="flex-shrink-0 flex flex-col items-end gap-1">
               <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: '13px', color: '#F2C14E', fontWeight: 500 }}>
-                {n.needScore.toFixed(1)}
+                {getDisplayScore(n).toFixed(1)}
               </span>
               <div style={{ width: '48px', height: '3px', background: 'rgba(247,245,240,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
-                <div style={{ width: `${(n.needScore / 10) * 100}%`, height: '100%', background: '#F2C14E', borderRadius: '2px' }} />
+                <div style={{ width: `${(getDisplayScore(n) / 10) * 100}%`, height: '100%', background: '#F2C14E', borderRadius: '2px' }} />
               </div>
             </div>
 
@@ -97,7 +103,7 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
       {/* Legend */}
       <div className="px-5 py-3" style={{ borderTop: '1px solid rgba(247,245,240,0.1)' }}>
         <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.4)', marginBottom: '6px' }}>
-          Score = SVI (50%) + Field density (25%) + B&GC density (25%) × 10
+          Score = SVI (50%) + Field density (25%) + B&GC (25%) × 10 − Org Impact
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
@@ -137,6 +143,9 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
   onClose: () => void;
 }) {
   const isGap = neighborhood.gapStatus === 'gap';
+  const displayScore = getDisplayScore(neighborhood);
+  const adjusted = adjustedNeighborhoodMap.get(neighborhood.id);
+  const orgReduction = adjusted?.orgCoverageReduction ?? 0;
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -157,7 +166,7 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
             {/* Score badge */}
             <div className="flex flex-col items-center px-3 py-1.5 rounded-xl" style={{ background: '#F2C14E' }}>
               <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '24px', color: '#0D2B1E', lineHeight: 1 }}>
-                {neighborhood.needScore.toFixed(1)}
+                {displayScore.toFixed(1)}
               </span>
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', color: 'rgba(13,43,30,0.7)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                 / 10
@@ -173,7 +182,13 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
           </div>
         </div>
         <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.35)', marginTop: '4px' }}>
-          RBI Readiness Score · SVI (50%) + Field density (25%) + B&GC density (25%)
+          RBI Readiness Score · SVI (50%) + Field density (25%) + B&GC (25%)
+          {orgReduction > 0 && (
+            <>
+              {' · '}
+              <span style={{ color: 'rgba(242,193,78,0.8)' }}>Org Coverage -{orgReduction.toFixed(2)}</span>
+            </>
+          )}
         </div>
       </div>
 
@@ -410,7 +425,7 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
             window.open(
               `mailto:rbi@mlb.com?subject=RBI Outreach: ${neighborhood.name} (${neighborhood.zipCodes[0]})` +
               `&body=Neighborhood: ${neighborhood.name}%0AZIP: ${neighborhood.zipCodes[0]}%0ACity: ${neighborhood.city}%0A` +
-              `RBI Readiness Score: ${neighborhood.needScore}/10%0ASVI: ${neighborhood.sviScore.toFixed(3)}%0A` +
+              `RBI Readiness Score: ${displayScore.toFixed(1)}/10%0ASVI: ${neighborhood.sviScore.toFixed(3)}%0A` +
               `Free Lunch %%: ${(neighborhood.freeLunchPct * 100).toFixed(0)}%%%0A` +
               `Baseball Fields: ${neighborhood.baseballFieldCount}%0AB%26GC Locations: ${neighborhood.bgcCount}%0A%0A` +
               `This ZIP has been identified as a high-priority candidate for RBI program deployment.`,

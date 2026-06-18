@@ -1,7 +1,18 @@
 // FIELDFINDER — Alameda + San Francisco County Data
-// RBI Readiness scores computed from Excel source data:
-//   Score = (SVI × 0.5) + (BaseballFields/18 × 0.25) + (B&GC/18 × 0.25)  × 10
-// Free lunch % is the primary economic-need proxy (% students qualifying for free/reduced lunch).
+// BASE SCORING (stored in needScore):
+//   Score = (SVI × 0.5) + (BaseballFields/18 × 0.25) + (B&GC/18 × 0.25) × 10
+//
+// ADJUSTED SCORING WITH ORG COVERAGE (use getAdjustedNeighborhood or getAllAdjustedNeighborhoods):
+//   Base Score = (SVI × 0.5) + (BaseballFields/18 × 0.25) + (B&GC/18 × 0.25) × 10  [same as original]
+//   Org Coverage Reduction = sum of nearby program impacts, capped at 1.5 points
+//   Adjusted Score = Base Score - Org Coverage Reduction (0–1.5 points)
+//   → Areas with NO nearby orgs keep full score (high need)
+//   → Areas with good org coverage get modest reduction (still ~4+ if base is 5+)
+//   → RBI/Little League programs have highest impact; Parks & Rec / Nonprofit lower
+//   → Free programs have 100% impact; low-cost 80%; paid 50%
+//   → Distance decay: programs closer to neighborhood center have more impact
+//
+// Free lunch % is a secondary economic-need proxy (% students on free/reduced lunch).
 // SVI = CDC Social Vulnerability Index (0–1, higher = more vulnerable).
 // =============================================================
 
@@ -1860,6 +1871,174 @@ export const programs: Program[] = [
     registrationWindowIsPlaceholder: true,
   },
 ];
+
+// ── ORGANIZATIONAL COVERAGE SCORING ────────────────────────────
+// FORMULA (with org presence):
+//   Base Score = (SVI × 0.50) + (BaseballFields/18 × 0.25) + (B&GC/18 × 0.25) × 10
+//   Adjusted Score = Base Score - Org Coverage Reduction
+//
+// Org Types (from best to least impactful):
+//   - RBI: 2.0 weight (ideal, free, comprehensive)
+//   - Little League: 1.5 weight (traditional, structured)
+//   - Parks & Rec: 0.8 weight (limited focus on baseball)
+//   - Nonprofit: 0.6 weight (variable coverage)
+//
+// Cost Multipliers:
+//   - Free: 1.0 (full reduction impact)
+//   - Low-cost: 0.8 (80% reduction impact)
+//   - Paid: 0.5 (50% reduction impact)
+//
+// Distance Decay: Programs closer to neighborhood have more impact (0.5 to 1.0 multiplier).
+// Cap: Total org reduction capped at 1.5 points max. Areas with no orgs keep full score.
+
+export interface OrgCoverage {
+  programId: string;
+  programName: string;
+  orgType: Program['orgType'];
+  cost: Program['cost'];
+  distanceMiles: number;
+  coverageImpact: number;
+}
+
+export interface AdjustedNeighborhood extends Neighborhood {
+  adjustedNeedScore: number;
+  orgCoverageReduction: number;
+  nearbyPrograms: OrgCoverage[];
+}
+
+/**
+ * Haversine distance calculator (miles between two lat/lng points)
+ */
+function haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 3959; // Earth radius in miles
+  const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
+  const dLat = toRadians(lat2 - lat1);
+  const dLng = toRadians(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLng / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+/**
+ * Find programs serving a neighborhood within max distance.
+ * Returns ordered list of org coverage impacts.
+ */
+export function findNearbyPrograms(
+  neighborhood: Neighborhood,
+  programs: Program[],
+  maxDistanceMiles: number = 5
+): OrgCoverage[] {
+  const orgTypeWeights: Record<Program['orgType'], number> = {
+    rbi: 2.0,
+    'little-league': 1.5,
+    'parks-rec': 0.8,
+    nonprofit: 0.6,
+  };
+
+  const costMultipliers: Record<Program['cost'], number> = {
+    free: 1.0,
+    'low-cost': 0.8,
+    paid: 0.5,
+  };
+
+  return programs
+    .map((program) => {
+      const distance = haversineDistance(
+        neighborhood.lat,
+        neighborhood.lng,
+        program.lat,
+        program.lng
+      );
+
+      if (distance > maxDistanceMiles) return null;
+
+      // Distance decay: closer programs have more impact (0.5 to 1.0 multiplier)
+      const distanceFactor = Math.max(0.5, 1 - distance / maxDistanceMiles);
+
+      const coverageImpact =
+        orgTypeWeights[program.orgType] * costMultipliers[program.cost] * distanceFactor;
+
+      return {
+        programId: program.id,
+        programName: program.name,
+        orgType: program.orgType,
+        cost: program.cost,
+        distanceMiles: parseFloat(distance.toFixed(2)),
+        coverageImpact: parseFloat(coverageImpact.toFixed(3)),
+      };
+    })
+    .filter((coverage): coverage is OrgCoverage => coverage !== null)
+    .sort((a, b) => b.coverageImpact - a.coverageImpact);
+}
+
+/**
+ * Calculate total org coverage reduction for a neighborhood.
+ * Capped at 1.5 points max to preserve meaningful score differentiation.
+ * Areas with no nearby orgs keep their full base score.
+ */
+export function calculateOrgCoverageReduction(
+  neighborhood: Neighborhood,
+  programs: Program[]
+): number {
+  const coverages = findNearbyPrograms(neighborhood, programs);
+  const totalImpact = coverages.reduce((sum, cov) => sum + cov.coverageImpact, 0);
+  return Math.min(1.5, totalImpact);
+}
+
+/**
+ * Calculate adjusted need score with org coverage factored in.
+ * Uses original weights (SVI 50%, Fields 25%, B&GC 25%) for base score,
+ * then subtracts org coverage reduction (0–1.5 points).
+ */
+export function calculateAdjustedNeedScore(
+  sviScore: number,
+  baseballFieldCount: number,
+  bgcCount: number,
+  orgCoverageReduction: number
+): number {
+  const sviComponent = sviScore * 0.5;
+  const fieldComponent = (baseballFieldCount / 18) * 0.25;
+  const bgcComponent = (bgcCount / 18) * 0.25;
+
+  const baseScore = (sviComponent + fieldComponent + bgcComponent) * 10;
+  const adjustedScore = baseScore - orgCoverageReduction;
+
+  return Math.max(0, adjustedScore);
+}
+
+/**
+ * Get an enhanced neighborhood view with adjusted scores and org coverage.
+ * Pass all neighborhoods and all programs to calculate coverage for each.
+ */
+export function getAdjustedNeighborhood(
+  neighborhood: Neighborhood,
+  programs: Program[]
+): AdjustedNeighborhood {
+  const nearbyPrograms = findNearbyPrograms(neighborhood, programs);
+  const orgCoverageReduction = calculateOrgCoverageReduction(neighborhood, programs);
+  const adjustedNeedScore = calculateAdjustedNeedScore(
+    neighborhood.sviScore,
+    neighborhood.baseballFieldCount,
+    neighborhood.bgcCount,
+    orgCoverageReduction
+  );
+
+  return {
+    ...neighborhood,
+    adjustedNeedScore,
+    orgCoverageReduction,
+    nearbyPrograms,
+  };
+}
+
+/**
+ * Get all neighborhoods with adjusted scores.
+ */
+export function getAllAdjustedNeighborhoods(programs: Program[]): AdjustedNeighborhood[] {
+  return neighborhoods.map((n) => getAdjustedNeighborhood(n, programs));
+}
 
 // ── HELPER FUNCTIONS ───────────────────────────────────────────
 
