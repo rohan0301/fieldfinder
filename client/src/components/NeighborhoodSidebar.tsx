@@ -92,10 +92,17 @@ function PriorityList({ onSelectNeighborhood, selectedId }: {
               </div>
             </div>
 
-            {/* Gap indicator */}
-            {n.gapStatus === 'gap' && (
-              <div className="flex-shrink-0 w-2 h-2 rounded-full" style={{ background: '#C0392B' }} />
-            )}
+            {/* Org coverage indicator */}
+            {(() => {
+              const adj = adjustedNeighborhoodMap.get(n.id);
+              const hasOrg = (adj?.nearbyPrograms.length ?? 0) > 0;
+              return (
+                <div
+                  className="flex-shrink-0 w-2 h-2 rounded-full"
+                  style={{ background: hasOrg ? '#4ADE80' : '#C0392B' }}
+                />
+              );
+            })()}
           </button>
         ))}
       </div>
