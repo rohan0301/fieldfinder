@@ -141,7 +141,7 @@ export const neighborhoods: Neighborhood[] = [
       },
     ],
     suggestedAnchor: null,
-    fieldNote: 'The highest-scoring ZIP in the dataset (6.70/10), driven by the strongest SVI score (0.645), second-highest baseball field count (11), and high B&GC density (14 locations). McConnell Field and Rickey Henderson Field are confirmed, playable diamonds. The primary barrier is not infrastructure — it is environment: community reviews consistently flag adult loitering and a perceived safety risk that discourages families from bringing children. At 93.6% free lunch participation, this is one of the highest-need economic corridors in the dataset. Any program deployment here should be paired with active community-safety partnerships. Infrastructure is present and waiting; the environment needs investment alongside equipment.',
+    fieldNote: '11 confirmed fields, 14 B&GC locations, 93.6% free lunch — top-ranked ZIP. Infrastructure is ready; the barrier is safety. Community reviews consistently flag loitering that keeps families away. Any deployment needs a community-safety partnership alongside the program.',
   },
 
   {
@@ -166,7 +166,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Second-highest scoring ZIP despite a moderate SVI (0.268), propelled by the second-highest baseball field count in the dataset (12 fields) and 14 B&GC locations — matching 94621 for organizational density. At 38.9% free lunch, Alameda has lower economic distress than the Oakland ZIPs at the top of this list, but the combination of infrastructure depth and B&GC capacity makes it a high-efficiency deployment candidate. The island geography is a program retention asset: youth are concentrated within defined boundaries, reducing travel barriers and improving participation consistency. No strong org or infrastructure signal from the Excel data suggests existing programs may not be youth-baseball-specific.',
+    fieldNote: '12 fields and 14 B&GC locations — deep infrastructure despite moderate economic need (38.9% free lunch). Island geography helps with retention; youth don\'t travel far. No baseball-specific org confirmed — high-efficiency deployment candidate.',
   },
 
   {
@@ -204,7 +204,7 @@ export const neighborhoods: Neighborhood[] = [
       },
     ],
     suggestedAnchor: null,
-    fieldNote: 'Fruitvale carries the highest B&GC count in the entire dataset (18 locations) — an extraordinary organizational infrastructure for any program launch. At 87.1% free lunch and SVI of 0.460, this is a confirmed high-need corridor. The critical open question: despite being flagged as having 1 baseball field, across 221 community reviews of Brookdale Park, zero reviews mention baseball. Soccer is culturally dominant in Fruitvale\'s predominantly Latino community. Before treating this as a baseball gap, verify physically whether a diamond exists and assess community interest. If a field can be confirmed and community appetite gauged, the B&GC depth here makes this one of the most organizationally capable ZIPs in the dataset for a fast launch.',
+    fieldNote: 'Highest B&GC count in the dataset (18 locations) and 87.1% free lunch — strong need and org depth. Critical caveat: across 221 Brookdale Park reviews, zero mention baseball. Soccer dominates. Confirm a diamond physically exists and gauge community interest before committing.',
   },
 
   {
@@ -229,7 +229,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'The highest baseball field count in the entire dataset (18 confirmed fields) — more baseball infrastructure than any other ZIP. This is one of SF\'s largest and most densely populated ZIPs (78,961 residents). At 62.1% free lunch, the Excelsior and Outer Mission are working-class, predominantly Latino families — economically constrained but not at the distress levels of East Oakland. The SVI of 0.199 reflects relative stability, but free lunch data tells a more nuanced story. Zero strong org or infrastructure flag in the Excel data suggests existing league presence is absent or weak despite the field count. This is the most infrastructure-rich SF ZIP in the dataset — a program could activate multiple diamonds without any capital investment.',
+    fieldNote: 'Most field-rich SF ZIP (18 confirmed diamonds), 62.1% free lunch, 78k residents. No org flag — no league is using this infrastructure. A program could activate multiple fields here with zero capital investment.',
   },
 
   {
@@ -254,7 +254,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'covered',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'One of San Francisco\'s most historically underserved communities, with 9 confirmed baseball fields, strong infrastructure (flagged True), and confirmed organizational presence (flagged True). At 84.3% free lunch and SVI of 0.433, Bayview-HP is one of the highest-need ZIPs in the SF portion of the dataset. The strong org flag suggests existing youth programs are operating. The key strategic question is whether current coverage has gaps in age range, season, or geographic reach within the ZIP. If the existing org is not specifically baseball-focused or does not serve the full age range, this ZIP is a high-priority expansion candidate rather than a greenfield deployment.',
+    fieldNote: '9 confirmed fields, strong org presence, 84.3% free lunch. Existing programs are operating here. Key question: do they cover baseball specifically, and do they reach the full age range? Expansion candidate, not greenfield.',
   },
 
   {
@@ -298,7 +298,7 @@ export const neighborhoods: Neighborhood[] = [
       phone: '(510) 238-7275',
       hasGym: true,
     },
-    fieldNote: 'The highest single-ZIP free-lunch rate in the entire dataset at 95.4% — a signal of deeply concentrated economic need. Sobrante Park has a confirmed baseball diamond (backstop intact, infield needs grading), but bathrooms have been permanently closed, signaling chronic underfunding by the city. The Ira Jinkins Community Center, 0.8 miles away, is the primary organizational anchor: it has existing youth engagement, a rec director who is known to the community, and a gym. Strong org is flagged True in the data, reflecting the Ira Jinkins presence — but no baseball-specific program has been identified. With 11 B&GC locations and strong community organizational depth, this ZIP has the infrastructure and org foundation for a program launch; it needs capital investment in the diamond and an affiliated org to activate it.',
+    fieldNote: 'Highest free-lunch rate in the dataset (95.4%). Diamond confirmed but infield needs grading and bathrooms are permanently closed — needs capital. Ira Jinkins Community Center (0.8 mi) is the org anchor; no baseball program identified yet. Infrastructure and org depth are there; needs a funder and an affiliate to activate.',
   },
 
   {
@@ -323,7 +323,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'The highest baseball field count of any SF ZIP in the dataset (16 confirmed fields) with zero organizational presence flagged. At 73.5% free lunch, Visitacion Valley is one of SF\'s higher-need neighborhoods, home to large Filipino, Latino, and Black populations. The combination of 16 ready-to-use fields and no org signal is the clearest infrastructure-without-activation pattern in the SF dataset. A program here would not need to invest in fields — it would simply need to show up. The moderate SVI (0.221) reflects relative physical safety but underweights the community\'s economic vulnerability captured better by the free lunch rate.',
+    fieldNote: '16 confirmed fields — most of any SF ZIP — with zero org presence. 73.5% free lunch. Clearest "show up and launch" opportunity in SF: no field investment needed, just an organization.',
   },
 
   // ── TIER 2: Score 2.5–4.0 ───────────────────────────────────
@@ -369,7 +369,7 @@ export const neighborhoods: Neighborhood[] = [
       phone: '(510) 482-7580',
       hasGym: true,
     },
-    fieldNote: 'Arroyo Viejo Recreation Center is already running after-school and summer youth programs — active, staffed, and community-embedded. No baseball org or diamond is confirmed, but the rec center\'s organizational infrastructure is ready to support a program without building from scratch. Community reviews split sharply by time of day: mornings and afternoons are family-oriented and active; evenings attract adults and the environment shifts. A structured afternoon baseball program would fit the existing use pattern. At 83.0% free lunch and 14 B&GC locations, this ZIP has both need and organizational depth. The primary barrier to deployment is finding or confirming a diamond surface — the org structure already exists.',
+    fieldNote: 'Arroyo Viejo Rec Center is active, staffed, and running after-school programs — org infrastructure exists. No confirmed baseball diamond. 83.0% free lunch, 14 B&GC locations. The blocker is field identification, not organization.',
   },
 
   {
@@ -418,7 +418,7 @@ export const neighborhoods: Neighborhood[] = [
       },
     ],
     suggestedAnchor: null,
-    fieldNote: 'The strongest deployment candidate in Hayward and one of the most actionable ZIPs in the full dataset. Centennial Park has two confirmed baseball diamonds actively used by families. Cannery Park has a field with bleachers and functioning restrooms. Bret Harte Park runs softball. Across all three parks, zero organizational presence appears in any community review — families are self-organizing play without a league structure. At 79.3% free lunch with a high Latino and Black population, this ZIP has both the need and the infrastructure. It requires only an organization to activate it. No capital investment in fields is needed; this is a program-launch opportunity, not an infrastructure project.',
+    fieldNote: 'Strongest deployment candidate in Hayward. Centennial Park has two ready diamonds, Cannery Park has a field with bleachers and working restrooms — zero org presence across all reviews. 79.3% free lunch. No capital needed; this ZIP just needs an organization to show up.',
   },
 
   {
@@ -443,7 +443,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Moderate-need suburban ZIP with solid baseball infrastructure (5 confirmed fields) and B&GC density (9 locations). At 40.0% free lunch, Castro Valley sits in the mid-tier economically — lower need than Oakland and Hayward ZIPs but with meaningful infrastructure and organizational capacity. The absence of strong infrastructure or org flags in the Excel data suggests field conditions and org presence require verification before committing to deployment. Most productive as a secondary target after higher-need urban ZIPs are addressed.',
+    fieldNote: '5 fields, 9 B&GC locations, 40.0% free lunch. Solid infrastructure but lower economic need than Oakland and Hayward ZIPs. Secondary target — verify field conditions before committing.',
   },
 
   {
@@ -480,7 +480,7 @@ export const neighborhoods: Neighborhood[] = [
       },
     ],
     suggestedAnchor: null,
-    fieldNote: 'San Leandro Little League (SLLL) is confirmed active at San Leandro Ball Park, with lights for night games and multigenerational participation documented in reviews ("my grandson still plays here"). This ZIP appears partially covered by existing league activity. With 7 baseball fields and 8 B&GC locations, there is infrastructure depth beyond the SLLL footprint. At 73.9% free lunch, economic need is real. The strategic question here is geographic coverage within the ZIP: does SLLL reach the lower-income pockets or concentrate on more established families? A supplemental RBI program targeting the underserved sub-areas could coexist with existing league activity.',
+    fieldNote: 'San Leandro Little League is active at San Leandro Ball Park (lights, confirmed). Partially covered. 7 fields, 8 B&GC locations, 73.9% free lunch. Question is whether SLLL reaches lower-income pockets — if not, a supplemental program could fill the gap.',
   },
 
   {
@@ -505,7 +505,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Dublin\'s high score is driven primarily by exceptional B&GC density (12 locations — third-highest in the dataset) rather than economic need: at 14.9% free lunch, this is one of the more affluent ZIPs in the dataset. No confirmed baseball fields are logged. The B&GC infrastructure suggests strong organized youth activity, but the economic profile does not match the primary RBI target demographic of underserved youth. Dublin may be better positioned as a program delivery partner (using its organizational capacity to serve youth bused in from higher-need neighboring ZIPs) rather than a primary deployment site.',
+    fieldNote: 'Score driven by B&GC density (12 locations), not need — 14.9% free lunch. No confirmed fields. Better as a delivery partner for neighboring high-need ZIPs than a primary deployment site.',
   },
 
   {
@@ -530,7 +530,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Mid-range Oakland ZIP with 3 confirmed fields, 8 B&GC locations, and 63.1% free lunch. SVI is moderate (0.270). The absence of strong org or infrastructure flags suggests existing programs have not activated these fields for youth baseball. Moderate-priority deployment candidate — higher need than the suburban East Bay ZIPs but lower urgency than the Oakland ZIPs at the top of the list.',
+    fieldNote: '3 fields, 8 B&GC locations, 63.1% free lunch. No org activation. Moderate priority — higher need than suburban ZIPs, lower urgency than top-tier Oakland.',
   },
 
   {
@@ -583,7 +583,7 @@ export const neighborhoods: Neighborhood[] = [
       distanceMiles: 0.3,
       hasGym: true,
     },
-    fieldNote: 'Garfield Park has a confirmed baseball diamond that appears in zero Google reviews — no ratings, no operating hours, no organizational presence, no community footprint whatsoever. San Antonio Park is the most active community space in the ZIP, with daily soccer, basketball, and boxing activity — but zero baseball signal across all reviews. At 86.4% free lunch, this is a high-need ZIP that is either unaware of its baseball infrastructure or has given up on it. The San Antonio Recreation Center is an established community anchor with consistent staff and programming. This is one of the clearest "invisible field" cases in the dataset — confirmed infrastructure with zero activation.',
+    fieldNote: 'Garfield Park has a confirmed diamond with zero Google reviews — no org, no community footprint. San Antonio Park is active daily (soccer, basketball) but zero baseball signal. 86.4% free lunch. Classic invisible field: infrastructure confirmed, activation is zero.',
   },
 
   {
@@ -608,7 +608,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Unincorporated Alameda County community with 2 confirmed fields, high B&GC density (10 locations), and 74.2% free lunch. Moderate SVI (0.218). B&GC presence suggests organizational capacity is available. Field conditions unverified — on-site assessment recommended before deployment.',
+    fieldNote: '2 fields, 10 B&GC locations, 74.2% free lunch. Org capacity present. Field conditions unverified — site visit needed before deployment.',
   },
 
   {
@@ -633,7 +633,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Higher-income Oakland hills ZIP (30.3% free lunch, low SVI). B&GC density is high (11 locations), suggesting strong organizational infrastructure. Score is driven primarily by B&GC count rather than economic need. Lower-priority for RBI deployment focused on underserved youth; more useful as a potential B&GC partner that could send staff or support to higher-need ZIPs nearby.',
+    fieldNote: 'Higher-income Oakland hills ZIP (30.3% free lunch). High B&GC density (11) drives the score, not economic need. Not a deployment priority — better as an org partner to support higher-need ZIPs.',
   },
 
   {
@@ -658,7 +658,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'High field count (8) and B&GC density (8) in an otherwise low-vulnerability SF ZIP (SVI 0.087). The 54.7% free lunch rate may reflect the mix of school populations across the ZIP rather than community-wide poverty. Lower RBI deployment priority given the very low SVI — economic indicators do not support urgent intervention here relative to East Bay targets.',
+    fieldNote: '8 fields, 8 B&GC locations, but very low SVI (0.087). Free lunch rate may reflect school demographics rather than community-wide poverty. Low deployment priority versus East Bay targets.',
   },
 
   {
@@ -706,7 +706,7 @@ export const neighborhoods: Neighborhood[] = [
       },
     ],
     suggestedAnchor: null,
-    fieldNote: 'Sorensdale Park has three confirmed baseball/softball fields with active youth use — one reviewer specifically notes their son plays baseball here. The presence of a snack bar and organized game days suggests an existing org may already be operating. This ZIP may already be partially served. Palma Ceia Park historically had a baseball diamond that no longer appears active — a potential restoration target. Verify existing org presence at Sorensdale before deploying a new program; if confirmed, focus deployment on Palma Ceia restoration or underserved sub-areas. At 76.8% free lunch and 80,214 population, this is the most populous ZIP in the dataset and carries significant aggregate need.',
+    fieldNote: 'Sorensdale Park has 3 active baseball/softball fields — one reviewer confirms youth baseball use. Snack bar and game days suggest an org may already be operating; verify before treating as a gap. 76.8% free lunch, largest ZIP by population (80k). If confirmed covered, focus on Palma Ceia Park restoration for sub-area expansion.',
   },
 
   {
@@ -731,7 +731,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Dense SF neighborhood with 3 confirmed fields, strong B&GC presence (9 locations), and 73.0% free lunch. At 69,299 residents, one of the most populous ZIPs in SF. The Mission is predominantly Latino — a community with real baseball tradition. Moderate SVI (0.166) reflects relative physical safety but understates economic vulnerability shown in free lunch data. The B&GC infrastructure provides a strong organizational foundation. Worth investigating which specific parks carry the 3 confirmed fields and whether any org is currently active.',
+    fieldNote: '3 fields, 9 B&GC locations, 73.0% free lunch, 69k residents. Predominantly Latino community with baseball tradition. No org confirmed — investigate which parks hold the fields and whether any program is already active.',
   },
 
   // ── TIER 3: Score 1.5–2.5 ───────────────────────────────────
@@ -758,7 +758,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'SF neighborhood with 5 confirmed fields and 8 B&GC locations. Low SVI (0.113) but 58.0% free lunch reflects pockets of economic need within a mixed-income area. Moderate deployment priority.',
+    fieldNote: '5 fields, 8 B&GC locations, 58.0% free lunch. Mixed-income area with pockets of need. Moderate priority.',
   },
 
   {
@@ -783,7 +783,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: '5 confirmed fields and 6 B&GC locations in a moderate-income SF ZIP. 46.4% free lunch suggests meaningful economic need among a portion of the population. Lower deployment priority than East Bay ZIPs at similar scores.',
+    fieldNote: '5 fields, 6 B&GC locations, 46.4% free lunch. Lower priority than East Bay ZIPs at similar scores.',
   },
 
   {
@@ -808,7 +808,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Hayward ZIP with 0 confirmed baseball fields but strong B&GC presence (9 locations) and 68.5% free lunch. No strong infrastructure or org flagged. Org infrastructure exists but may need field identification before program launch.',
+    fieldNote: 'No confirmed fields, but 9 B&GC locations and 68.5% free lunch. Org capacity present — needs field identification before launch.',
   },
 
   {
@@ -833,7 +833,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Affluent Tri-Valley suburb (11.0% free lunch). Score reflects B&GC density more than economic need. Not an RBI deployment priority — does not match the underserved youth profile.',
+    fieldNote: 'Affluent suburb (11.0% free lunch). Score reflects B&GC density, not need. Not an RBI deployment priority.',
   },
 
   {
@@ -858,7 +858,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: '4 fields, 6 B&GC locations, 59.7% free lunch in a dense SF neighborhood. Chinatown portion has meaningful economic need; North Beach portion is higher-income. Mixed profile — field-specific investigation recommended.',
+    fieldNote: '4 fields, 6 B&GC locations, 59.7% free lunch. Chinatown half has real need; North Beach half is higher-income. Mixed profile — investigate field locations before committing.',
   },
 
   {
@@ -883,7 +883,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Oakland neighborhood with 5 confirmed fields and 66.6% free lunch. Moderate need and solid infrastructure count. Lower B&GC density (4) than other Oakland ZIPs. Field conditions unverified — site assessment recommended.',
+    fieldNote: '5 fields, 66.6% free lunch. Low B&GC density (4) compared to other Oakland ZIPs. Field conditions unverified — site visit recommended.',
   },
 
   {
@@ -958,7 +958,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'San Leandro ZIP with 5 confirmed fields and 71.1% free lunch. Low B&GC count (4). San Leandro Little League covers neighboring 94577; verify whether SLLL coverage extends into this ZIP. Washington Manor Park has a confirmed field with Good condition per neighborhood reviews.',
+    fieldNote: '5 fields, 71.1% free lunch, low B&GC count (4). SLLL covers neighboring 94577 — verify whether coverage extends here. Washington Manor Park field confirmed in good condition.',
   },
 
   {
@@ -983,7 +983,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Affluent Pleasanton ZIP (9.4% free lunch). Score reflects moderate SVI and B&GC presence. Does not match the underserved youth profile for RBI deployment.',
+    fieldNote: 'Affluent Pleasanton ZIP (9.4% free lunch). Not an RBI deployment priority.',
   },
 
   {
@@ -1033,7 +1033,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Despite an 84.6% free lunch rate (high economic need) and SVI of 0.312, this ZIP scores low due to zero confirmed baseball fields and only 3 B&GC locations — thin infrastructure and organizational capacity. Economic need is real; the gap is in physical and organizational infrastructure. Identify whether any recreational space exists before considering deployment.',
+    fieldNote: '84.6% free lunch and real economic need, but zero confirmed fields and only 3 B&GC locations. Thin infrastructure blocks deployment. Identify whether any recreational space exists first.',
   },
 
   {
@@ -1058,7 +1058,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: '81.0% free lunch — one of the higher economic need readings in the dataset — combined with 4 fields and 5 B&GC locations. Low SVI (0.144) reflects relative physical safety. The free lunch rate suggests greater economic distress than the SVI captures. Worth investigating given the field count and free lunch data.',
+    fieldNote: '81.0% free lunch despite low SVI — economic need is higher than the score suggests. 4 fields, 5 B&GC locations. Worth investigating.',
   },
 
   {
@@ -1083,7 +1083,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'Higher-income Berkeley neighborhood (28.8% free lunch, low SVI). 5 fields present. Does not match the underserved youth profile for RBI deployment.',
+    fieldNote: 'Higher-income Berkeley neighborhood (28.8% free lunch, low SVI). 5 fields but does not match the underserved youth profile.',
   },
 
   {
@@ -1120,7 +1120,7 @@ export const neighborhoods: Neighborhood[] = [
       },
     ],
     suggestedAnchor: null,
-    fieldNote: 'Town Estates Park has four confirmed baseball fields — the highest single-park count in the South Alameda dataset — with active family use documented in multiple reviews. No organization name appears in any review. Four well-used fields typically implies some form of organized league; verify before treating as a gap. Moderate need area (48.8% free lunch) with a large Latino community. If unconfirmed org presence is ruled out, Town Estates Park is a strong infrastructure-ready deployment site.',
+    fieldNote: 'Town Estates Park has 4 confirmed, actively used baseball fields — no org name in any review. 48.8% free lunch, large Latino community. Verify whether a league is already operating; if not, this is a ready deployment site.',
   },
 
   {
@@ -1195,7 +1195,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: '4 fields, 54.3% free lunch, low SVI. SF College area ZIP with moderate need. City College of SF proximity may provide organizational partnership opportunities.',
+    fieldNote: '4 fields, 54.3% free lunch. City College of SF proximity is a potential org partner.',
   },
 
   {
@@ -1220,7 +1220,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: 'No confirmed baseball fields. Moderate SVI (0.263) and 31.9% free lunch. Thin organizational infrastructure (3 B&GC). Not a viable deployment site without field identification.',
+    fieldNote: 'No confirmed fields, 3 B&GC locations. Not viable without field identification.',
   },
 
   {
@@ -1245,7 +1245,7 @@ export const neighborhoods: Neighborhood[] = [
     gapStatus: 'gap',
     fields: [],
     suggestedAnchor: null,
-    fieldNote: '5 confirmed fields but only 1 B&GC location — infrastructure without organizational depth. Small population (11,208). B&GC capacity needs to grow before this is a viable deployment site.',
+    fieldNote: '5 fields but only 1 B&GC location. Small population (11k). Org capacity too thin for deployment.',
   },
 
   {
@@ -1863,11 +1863,274 @@ export const programs: Program[] = [
     season: 'Spring/Summer',
     registrationOpen: true,
     registrationWindow: 'Contact for current registration details',
+    phone: '(510) 238-7275',
     status: 'confirmed-active',
     coverageRadiusMiles: 3,
     description: 'Bushrod Park is home to the North Oakland Little League (NOLL) and South Oakland Little League (SOLL), providing organized youth baseball in the heart of North Oakland. The park features dedicated baseball fields actively used for league play and youth development.',
     notes: 'Known NOLL/SOLL Little League home field. Already organized and actively served.',
     descriptionIsPlaceholder: true,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'east-bay-ball-summer-camp',
+    name: 'East Bay BALL Summer Camp',
+    orgType: 'parks-rec',
+    lat: 37.8418,
+    lng: -122.2329,
+    city: 'Oakland',
+    address: '6686 Chabot Rd, Oakland, CA 94618',
+    ageMin: 6,
+    ageMax: 12,
+    cost: 'paid',
+    equipmentProvided: true,
+    season: 'Summer',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    phone: '(510) 519-4665',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'East Bay BALL Summer Camp runs out of Chabot Elementary School in the Rockridge area of Oakland. The camp serves youth ages 6–12 with a focus on improving baseball skills and increasing enjoyment of the game. Monday–Friday, 9am–4pm per session.',
+    descriptionIsPlaceholder: false,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'future-star-baseball',
+    name: 'Future Star Baseball',
+    orgType: 'parks-rec',
+    lat: 37.7903,
+    lng: -122.1681,
+    city: 'Oakland',
+    address: '12000 Campus Dr, Oakland, CA 94619',
+    ageMin: 6,
+    ageMax: 18,
+    cost: 'paid',
+    equipmentProvided: true,
+    season: 'Year-round',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    phone: '(510) 710-0987',
+    website: 'https://futurestarbaseball.com',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'Future Star Baseball is a training academy in the Oakland hills offering after-school baseball classes, private lessons, and batting cage sessions for youth ages 6–18. Located at 12000 Campus Drive, open weekdays 3:30–9:30pm and weekends 9am–5pm.',
+    descriptionIsPlaceholder: false,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'albany-little-league',
+    name: 'Albany Little League',
+    orgType: 'little-league',
+    lat: 37.8877,
+    lng: -122.2981,
+    city: 'Albany',
+    address: '900 Buchanan St, Albany, CA 94706',
+    ageMin: 4,
+    ageMax: 16,
+    cost: 'low-cost',
+    equipmentProvided: true,
+    season: 'Spring/Summer',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    phone: '(510) 981-5161',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'Albany Little League serves families across Albany and surrounding areas with spring and summer league play at Ocean View Field on Buchanan Street. A community-run Little League chartered program with divisions for all ages.',
+    descriptionIsPlaceholder: false,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'lil-rugrats-baseball',
+    name: 'LilRugrats Baseball',
+    orgType: 'nonprofit',
+    lat: 37.8636,
+    lng: -122.2853,
+    city: 'Berkeley',
+    address: 'West Berkeley, CA 94702',
+    ageMin: 3,
+    ageMax: 6,
+    cost: 'low-cost',
+    equipmentProvided: true,
+    season: 'Year-round',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    phone: '(510) 705-2865',
+    status: 'listed',
+    coverageRadiusMiles: 2,
+    description: 'LilRugrats Baseball is a nonprofit youth baseball organization in West Berkeley serving young children with introductory baseball programming. Focused on the youngest age groups (3–6) in the 94702 ZIP code.',
+    descriptionIsPlaceholder: true,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'james-kenney-community-center',
+    name: 'James Kenney Community Center',
+    orgType: 'parks-rec',
+    lat: 37.8672,
+    lng: -122.2966,
+    city: 'Berkeley',
+    address: '1720 8th St, Berkeley, CA 94710',
+    ageMin: 5,
+    ageMax: 16,
+    cost: 'free',
+    equipmentProvided: false,
+    season: 'Year-round',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    phone: '(510) 981-6650',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 2,
+    description: 'James Kenney Community Center is a City of Berkeley recreation facility at 1720 8th Street in West Berkeley. The park includes a softball field, outdoor basketball courts, and active youth programming run through the Berkeley Parks & Recreation department.',
+    descriptionIsPlaceholder: false,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'mt-eden-little-league',
+    name: 'Mt. Eden Little League',
+    orgType: 'little-league',
+    lat: 37.6308,
+    lng: -122.1073,
+    city: 'Hayward',
+    address: '2121 Depot Rd, Hayward, CA 94545',
+    ageMin: 4,
+    ageMax: 16,
+    cost: 'low-cost',
+    equipmentProvided: true,
+    season: 'Spring/Summer',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    phone: '(510) 783-2211',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'Mt. Eden Little League is a chartered Little League program serving the southern Hayward community from its home fields on Depot Road. The league serves youth ages 4–16 with spring and summer season play.',
+    descriptionIsPlaceholder: false,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'tennyson-american-little-league',
+    name: 'Tennyson American Little League',
+    orgType: 'little-league',
+    lat: 37.6366,
+    lng: -122.0608,
+    city: 'Hayward',
+    address: '26691 Jane Ave, Hayward, CA 94544',
+    ageMin: 4,
+    ageMax: 16,
+    cost: 'low-cost',
+    equipmentProvided: true,
+    season: 'Spring/Summer',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    phone: '(510) 881-5584',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'Tennyson American Little League operates out of Sorensdale Park on Jane Avenue in South Hayward, serving youth ages 4–16. The league uses Sorensdale Park\'s baseball and softball fields for spring and summer season play.',
+    descriptionIsPlaceholder: false,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'san-leandro-little-league',
+    name: 'San Leandro Little League',
+    orgType: 'little-league',
+    lat: 37.7098,
+    lng: -122.1654,
+    city: 'San Leandro',
+    address: 'Teagarden St & Aladdin Ave, San Leandro, CA 94577',
+    ageMin: 4,
+    ageMax: 16,
+    cost: 'low-cost',
+    equipmentProvided: true,
+    season: 'Spring/Summer',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    phone: '(510) 577-3462',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'San Leandro Little League plays at San Leandro Ball Park at Teagarden Street and Aladdin Avenue — a pro-sized lighted facility with grandstands and restrooms. A well-established program serving the 94577 ZIP with spring and summer league play.',
+    descriptionIsPlaceholder: false,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'floresta-baseball-league',
+    name: 'Floresta Baseball League',
+    orgType: 'little-league',
+    lat: 37.6889,
+    lng: -122.1591,
+    city: 'San Leandro',
+    address: 'Washington Manor Park, San Leandro, CA 94579',
+    ageMin: 4,
+    ageMax: 16,
+    cost: 'low-cost',
+    equipmentProvided: true,
+    season: 'Spring/Summer',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    phone: '(510) 352-7281',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'Floresta Baseball League is a community baseball league serving the Washington Manor area of San Leandro (94579). The league uses Washington Manor Park and nearby San Leandro school fields for spring and summer season play for youth ages 4–16.',
+    descriptionIsPlaceholder: false,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'san-lorenzo-little-league',
+    name: 'San Lorenzo Little League',
+    orgType: 'little-league',
+    lat: 37.6821,
+    lng: -122.1253,
+    city: 'San Lorenzo',
+    address: '1062 Grant Ave, San Lorenzo, CA 94580',
+    ageMin: 4,
+    ageMax: 16,
+    cost: 'low-cost',
+    equipmentProvided: true,
+    season: 'Spring/Summer',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'San Lorenzo Little League operates a five-field complex at Mervin Morris Park on Grant Avenue, at the heart of San Lorenzo Village. The league serves youth ages 4–16 from San Lorenzo, San Leandro, and Ashland communities.',
+    descriptionIsPlaceholder: false,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'fremont-centerville-little-league',
+    name: 'Fremont Centerville Little League',
+    orgType: 'little-league',
+    lat: 37.5576,
+    lng: -121.9924,
+    city: 'Fremont',
+    address: '40432 Torenia Cir, Fremont, CA 94538',
+    ageMin: 4,
+    ageMax: 16,
+    cost: 'low-cost',
+    equipmentProvided: true,
+    season: 'Spring/Summer',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'Fremont Centerville Little League is a nationally sanctioned Little League program serving over 500 families in central and north Fremont and Newark. Based in the Centerville neighborhood (94538), the league fields teams across all Little League age divisions.',
+    descriptionIsPlaceholder: false,
+    registrationWindowIsPlaceholder: true,
+  },
+  {
+    id: 'warm-springs-little-league',
+    name: 'Warm Springs Little League',
+    orgType: 'little-league',
+    lat: 37.5061,
+    lng: -121.9255,
+    city: 'Fremont',
+    address: '47370 Warm Springs Blvd, Fremont, CA 94539',
+    ageMin: 4,
+    ageMax: 16,
+    cost: 'low-cost',
+    equipmentProvided: true,
+    season: 'Spring/Summer',
+    registrationOpen: true,
+    registrationWindow: 'Contact for current registration details',
+    status: 'confirmed-active',
+    coverageRadiusMiles: 3,
+    description: 'Warm Springs Little League is a 501(c)(3) nonprofit serving the Warm Springs district of Fremont since 1990. Fields and a clubhouse are located at Warm Springs Elementary School on Warm Springs Boulevard, with additional Juniors fields at Warm Springs Community Park.',
+    descriptionIsPlaceholder: false,
     registrationWindowIsPlaceholder: true,
   },
 ];
@@ -2027,6 +2290,7 @@ export function getAdjustedNeighborhood(
 
   return {
     ...neighborhood,
+    strongOrg: nearbyPrograms.length > 0,
     adjustedNeedScore,
     orgCoverageReduction,
     nearbyPrograms,

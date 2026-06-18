@@ -266,7 +266,7 @@ function NeighborhoodProfile({ neighborhood, onClose }: {
               { label: 'High Economic Need (Free Lunch > 70%)', active: neighborhood.freeLunchPct > 0.7 },
               { label: 'Baseball Field Infrastructure Present', active: neighborhood.baseballFieldCount > 0 },
               { label: 'Strong Infrastructure (field quality)', active: neighborhood.strongInfrastructure },
-              { label: 'Strong Org Signal (community programs)', active: neighborhood.strongOrg },
+              { label: 'Strong Org Signal (community programs)', active: adjusted?.strongOrg ?? neighborhood.strongOrg },
               { label: 'Dense B&GC Network (5+ locations)', active: neighborhood.bgcCount >= 5 },
             ].map((signal) => (
               <div key={signal.label} className="flex items-center gap-2.5">

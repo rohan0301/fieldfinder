@@ -388,6 +388,30 @@ export function MapViewComponent({
       }
     });
 
+    // Org coverage dots — green where programs are nearby, red where none
+    neighborhoods.forEach(n => {
+      const adjusted = adjustedNeighborhoodMap.get(n.id);
+      const hasOrg = (adjusted?.nearbyPrograms.length ?? 0) > 0;
+      overlaysRef.current.push(
+        new google.maps.Marker({
+          map: mapRef.current!,
+          position: { lat: n.lat, lng: n.lng },
+          title: hasOrg
+            ? `${n.name} — org coverage detected`
+            : `${n.name} — no org coverage`,
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 5,
+            fillColor: hasOrg ? COLORS.readyGreen : COLORS.gapRed,
+            fillOpacity: 0.9,
+            strokeColor: '#FFFFFF',
+            strokeWeight: 1.5,
+          },
+          zIndex: 5,
+        })
+      );
+    });
+
     // RBI program coverage rings
     programs
       .filter(p => p.orgType === 'rbi' && p.status === 'confirmed-active')
@@ -515,6 +539,19 @@ export function MapViewComponent({
                 <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>{label}</span>
               </div>
             ))}
+            <div style={{ borderTop: '1px solid rgba(247,245,240,0.1)', marginTop: '4px', paddingTop: '6px' }} className="flex flex-col gap-1.5">
+              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '10px', color: 'rgba(247,245,240,0.4)', letterSpacing: '0.08em', marginBottom: '2px' }}>
+                ORG COVERAGE
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: COLORS.readyGreen }} />
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>Covered</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: COLORS.gapRed }} />
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(247,245,240,0.6)' }}>No coverage</span>
+              </div>
+            </div>
             {hoveredZip && (
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '10px', color: 'rgba(247,245,240,0.35)', marginTop: '4px', borderTop: '1px solid rgba(247,245,240,0.1)', paddingTop: '4px' }}>
                 ZIP {hoveredZip}
@@ -559,7 +596,7 @@ export function MapViewComponent({
           style={{ background: 'rgba(13,43,30,0.92)', border: '1px solid rgba(74,222,128,0.3)', backdropFilter: 'blur(8px)' }}
         >
           <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: '13px', color: COLORS.readyGreen, letterSpacing: '0.05em', marginBottom: '4px' }}>
-            4 PROGRAMS · BAY AREA
+            {programs.length} PROGRAMS · BAY AREA
           </div>
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(247,245,240,0.7)', lineHeight: 1.5 }}>
             Click any pin to see program details, contact info, and directions.
